@@ -1,0 +1,233 @@
+/* Container */
+.quiz-generator-container {
+  max-width: 1200px;
+  margin: 2rem auto;
+  font-family: sans-serif;
+  min-height: 600px;
+}
+
+/* Heading */
+.quiz-generator-title {
+  margin-bottom: 1.5rem;
+}
+
+/* Label */
+.quiz-generator-label {
+  font-weight: bold;
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+/* Textarea */
+.quiz-generator-textarea {
+  width: 100%;
+  min-height: 250px;
+  margin-top: 0.5rem;
+
+  /* Rounded corners + subtle background */
+  border-radius: 8px;
+  background-color: #f5f7ff;
+  border: 1px solid #d8def3;
+  padding: 1rem;
+  box-sizing: border-box;
+  font-size: 1rem;
+
+  /* Optional: softer text color if you want a placeholder-like style */
+  color: #4a4a4a;
+}
+
+/* Character count */
+.quiz-generator-charcount {
+  text-align: right;
+  margin-top: 0.25rem;
+  color: #666;
+}
+
+/* Error text */
+.quiz-generator-error {
+  color: red;
+  margin-top: 0.5rem;
+}
+
+/* Generate (Next) button */
+.quiz-generator-generate-btn {
+  margin-top: 1rem;
+  cursor: pointer;
+  
+  /* Rounded look, white background, blue border to match “Next” style */
+  background-color: #fff;
+  color: #556afe; /* or #007BFF if you prefer */
+  border: 2px solid #556afe;
+  border-radius: 24px;
+
+  padding: 0.6rem 2rem;
+  font-size: 1rem;
+  font-weight: 600;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.quiz-generator-generate-btn:hover {
+  background-color: #556afe;
+  color: #fff;
+}
+
+/* Quiz data container */
+.quiz-generator-quizdata {
+  margin-top: 2rem;
+}
+
+.quiz-generator-return-btn {
+  background-color: #6c757d; /* Gray background */
+  color: #fff; /* White text */
+  border: none; /* Remove border */
+  border-radius: 12px; /* Rounded corners */
+  padding: 1rem 2rem; /* Increase padding for a larger button */
+  font-size: 1.2rem; /* Larger font size */
+  cursor: pointer; /* Pointer cursor on hover */
+  margin-top: 1.5rem; /* Add some spacing from the top */
+  text-align: center; /* Center the text */
+  transition: background-color 0.3s ease, transform 0.2s ease; /* Smooth hover effect */
+}
+
+/* Hover effect */
+.quiz-generator-return-btn:hover {
+  background-color: #5a6268; /* Darker gray on hover */
+  transform: scale(1.1); /* Slightly enlarge the button */
+}
+
+/* Active (click) effect */
+.quiz-generator-return-btn:active {
+  background-color: #4e555b; /* Even darker gray on click */
+  transform: scale(0.95); /* Slightly shrink the button */
+}
+
+
+
+/* Modal backdrop */
+.quiz-generator-modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+/* Modal container */
+.quiz-generator-modal-container {
+  background: #fff;
+  border-radius: 8px;
+  padding: 2rem 3rem; /* Increased padding for better spacing */
+  min-width: 600px; /* Increased width */
+  min-height: 400px; /* Added height to make it larger */
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  display: flex;
+  flex-direction: column; /* Ensures content flows vertically */
+  justify-content: space-between; /* Adds spacing between modal sections */
+}
+
+
+/* Modal heading */
+.quiz-generator-modal-heading {
+  margin-top: 0;
+  margin-bottom: 1rem;
+}
+
+/* Dropdown fields */
+.quiz-generator-dropdown {
+  width: 100%;
+  margin-bottom: 1rem;
+  padding: 0.4rem;
+  border-radius: 4px;
+}
+
+/* Modal actions container */
+.quiz-generator-modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 1rem;
+}
+
+/* Cancel button */
+.quiz-generator-cancel-btn {
+  background-color: #fff; /* White background */
+  color: #ff4d4d; /* Red text */
+  border: 2px solid #ff4d4d; /* Red border */
+  border-radius: 24px; /* Rounded edges */
+  padding: 0.6rem 2rem;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.quiz-generator-cancel-btn:hover {
+  background-color: #ff4d4d; /* Red background */
+  color: #fff; /* White text */
+}
+
+/* Confirm/Generate button in modal */
+.quiz-generator-confirm-btn {
+  background-color: #fff;
+  color: #556afe;
+  border: 2px solid #556afe;
+  border-radius: 24px;
+  padding: 0.6rem 2rem;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.quiz-generator-confirm-btn:hover {
+  background-color: #556afe;
+  color: #fff;
+}
+
+/* Slider container */
+.quiz-generator-slider {
+  width: 100%;
+  margin: 0.5rem 0;
+  appearance: none;
+  height: 5px;
+  background: #4596e2;
+  border-radius: 5px;
+  outline: none;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+/* Slider thumb */
+.quiz-generator-slider::-webkit-slider-thumb {
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #007BFF;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.quiz-generator-slider::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #007BFF;
+  cursor: pointer;
+}
+
+/* When slider is active */
+.quiz-generator-slider:active::-webkit-slider-thumb {
+  background: #0056b3;
+}
+
+.quiz-generator-slider-value {
+  text-align: center;
+  margin-top: 0.5rem;
+  font-weight: bold;
+  color: #333;
+}

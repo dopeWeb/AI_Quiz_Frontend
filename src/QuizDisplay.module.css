@@ -1,0 +1,87 @@
+.container {
+    max-width: 600px;
+    margin: 2rem auto;
+    font-family: sans-serif;
+  }
+  
+  .questionCard {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+  }
+  
+  .optionBase {
+    display: flex;
+    align-items: center;
+    border-radius: 4px;
+    padding: 0.75rem;
+    margin-bottom: 0.5rem;
+    cursor: pointer;
+    border: 1px solid #ddd;
+  }
+  
+  .letterBox {
+    width: 30px;
+    font-weight: bold;
+    margin-right: 0.5rem;
+    text-align: center;
+    border-right: 1px dashed #ccc;
+    padding-right: 0.5rem;
+  }
+  
+  .selectedOption {
+    background-color: #eaf1fe;
+    border: 1px solid #b2cff8;
+  }
+  
+  .correctOption {
+    background-color: #d4edda;
+    border-color: #c3e6cb;
+  }
+  
+  .incorrectOption {
+    background-color: #f8d7da;
+    border-color: #f5c6cb;
+  }
+  
+  .lockButton,
+  .nextButton,
+  .finishButton {
+    background-color: #6c5ce7;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    padding: 0.6rem 1.2rem;
+    cursor: pointer;
+  }
+  
+  .nextButton {
+    margin-right: 1rem;
+  }
+  
+  .lockButton:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+  }
+  
+
+  .toggleButton {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    margin: 0.5rem 0;
+  }
+  
+  .answerBox {
+    margin-top: 0.5rem;
+    font-style: italic;
+    color: #333;
+  }
+
+  
+  
+  
