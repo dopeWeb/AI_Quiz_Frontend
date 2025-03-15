@@ -1,0 +1,166 @@
+/*********************************
+  Overall Container (Modal Style)
+**********************************/
+.auth-container {
+  width: 100%;
+  max-width: 420px; /* Adjust as needed */
+  margin: 3rem auto; /* Center on the page */
+  background-color: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  padding: 2rem;
+  position: relative;
+}
+
+/*********************************
+  Close (X) Button (Optional)
+**********************************/
+.auth-close-button {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: transparent;
+  border: none;
+  font-size: 1.2rem;
+  cursor: pointer;
+}
+
+/*********************************
+  Header & Title
+**********************************/
+.auth-title {
+  text-align: center;
+  margin-bottom: 1.5rem;
+  font-size: 1.8rem;
+  font-weight: 600;
+  color: #2c2c2c;
+}
+
+/*********************************
+  Google Button
+**********************************/
+.google-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;               /* Make the button span full width */
+  padding: 12px;
+  border: 1px solid #e0e0e0; /* Light gray border */
+  border-radius: 8px;        /* Slightly rounded corners */
+  background-color: #fff;    
+  color: #6C6C6C;            /* Text color similar to your screenshot */
+  font-size: 16px;
+  cursor: pointer;
+  outline: none;
+  transition: background-color 0.2s ease;
+}
+
+.google-button:hover {
+  background-color: #f7f7f7; /* Slight hover effect */
+}
+
+.google-icon {
+  width: 20px;
+  height: 20px;
+  margin-right: 8px; 
+}
+
+/*********************************
+  "Or" Divider
+**********************************/
+.auth-divider {
+  display: flex;
+  align-items: center;
+  margin: 1rem 0;
+  color: #999;
+  font-size: 0.9rem;
+  text-align: center;
+}
+
+.auth-divider::before,
+.auth-divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background-color: #ddd;
+}
+
+.auth-divider span {
+  margin: 0 0.75rem;
+}
+
+/*********************************
+  Form Fields
+**********************************/
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  align-items: flex-start; /* Aligns labels and inputs to the left */
+}
+
+.auth-form label {
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin-bottom: 0.3rem;
+  color: #555;
+}
+
+/* Pill‐shaped text fields with a subtle background */
+.auth-form input {
+  width: 90%;
+  background-color: #f3f6ff;
+  border: 1px solid #d6d9e0;
+  border-radius: 999px;   /* Pill shape */
+  padding: 0.75rem 1rem;
+  font-size: 1rem;
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+
+/* Purple outline on focus */
+.auth-form input:focus {
+  border-color: #7367f0;
+}
+
+/*********************************
+  Submit Button (Outline -> Filled on Hover)
+**********************************/
+.auth-form button {
+  width: 100%;
+  margin-top: 1.5rem; /* Move it lower by increasing this value */
+  background: transparent;
+  color: #7367f0;
+  border: 2px solid #7367f0;
+  border-radius: 999px;
+  padding: 0.75rem 1rem;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+
+.auth-form button:hover {
+  background-color: #7367f0;
+  color: #fff;
+}
+
+/*********************************
+  Footer Links (Login/Create Account)
+**********************************/
+.auth-footer {
+  text-align: center;
+  margin-top: 1rem;
+  font-size: 0.9rem;
+}
+
+.auth-footer a {
+  color: #7367f0;
+  text-decoration: none;
+}
+
+.auth-footer a:hover {
+  text-decoration: underline;
+}
+

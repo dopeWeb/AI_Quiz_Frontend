@@ -1,0 +1,122 @@
+/* src/SaveQuiz.css */
+
+/* Wrapper & Titles */
+.save-quiz-wrapper {
+  width: 90%;
+  max-width: 1200px;
+  margin: 2rem auto;
+  font-family: sans-serif;
+}
+
+.save-quiz-title {
+  margin-bottom: 1rem;
+  font-weight: 600;
+  font-size: 1.8rem;
+}
+
+.save-quiz-subtitle {
+  margin-bottom: 1.5rem;
+  font-size: 1.2rem;
+  color: #666;
+}
+
+/* Quiz List Container */
+.quiz-list-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+}
+
+/* Quiz Card */
+.quiz-card {
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  padding: 1rem 1.5rem;
+  width: 250px; /* Adjust as needed */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+/* Card Header */
+.quiz-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.quiz-card-title {
+  margin: 0;
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+/* 3-dot menu placeholder */
+.quiz-card-menu {
+  cursor: pointer;
+  font-size: 1.5rem;
+  color: #999;
+}
+
+/* Meta Info */
+.quiz-card-meta {
+  font-size: 0.9rem;
+  color: #666;
+  margin-bottom: 1rem;
+}
+
+/* Actions */
+.quiz-card-actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: auto; /* Push actions to bottom if card is taller */
+}
+
+/* Buttons */
+.quiz-card-edit-btn,
+.quiz-card-start-btn {
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+  transition: background-color 0.2s ease;
+}
+
+/* Edit Button - Outline Style */
+.quiz-card-edit-btn {
+  background-color: #fff;
+  color: #007bff;
+  border: 1px solid #007bff;
+}
+
+.quiz-card-edit-btn:hover {
+  background-color: #eaf1fe;
+}
+
+/* Start Button - Filled Style */
+.quiz-card-start-btn {
+  background-color: #007bff;
+  color: #fff;
+}
+
+.quiz-card-start-btn:hover {
+  background-color: #0056b3;
+}
+.quiz-card-delete-btn {
+  background-color: #dc3545; /* Bootstrap's danger color, for example */
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background-color 0.2s ease;
+  margin-left: auto; /* or use gap if you prefer consistent spacing */
+}
+
+.quiz-card-delete-btn:hover {
+  background-color: #c82333; /* Darker shade of red on hover */
+}

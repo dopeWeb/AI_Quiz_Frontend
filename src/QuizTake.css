@@ -1,0 +1,23 @@
+.quiz-take-btn {
+    background-color: #7367f0;
+    color: #fff;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+  }
+  
+  /* Hover effect */
+  .quiz-take-btn:hover {
+    background-color: #6156ce;
+  }
+  
+  /* Float just this button to the left */
+  .left-btn {
+    float: left;
+    margin-top: 0rem;    /* Push the button downward */
+    margin-left: 0rem;    /* Shift the button to the right */
+  }
+  

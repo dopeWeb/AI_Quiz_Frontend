@@ -1,87 +1,295 @@
+/* Main container */
 .container {
-    max-width: 600px;
-    margin: 2rem auto;
-    font-family: sans-serif;
+  max-width: 800px;
+  margin: 2rem auto;
+  font-family: sans-serif;
+  text-align: center;
+  padding: 1rem;
+}
+
+/* Question card styling */
+.questionCard {
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  padding: 2rem;
+  margin-bottom: 2rem;
+  background-color: #f9f9f9;
+}
+
+/* Progress Bar */
+.progressBar {
+  width: 100%;
+  height: 8px;
+  background-color: #eaeaea;
+  border-radius: 4px;
+  margin-bottom: 1.5rem;
+}
+
+.progressFill {
+  height: 100%;
+  background-color: #4caf50;
+  border-radius: 4px;
+  transition: width 0.4s ease;
+}
+
+/* Question text */
+h3 {
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 1.5rem;
+}
+
+/* Option base styles */
+.optionBase {
+  display: flex;
+  align-items: center;
+  border-radius: 12px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  cursor: pointer;
+  border: 1px solid #ddd;
+  transition: all 0.3s ease;
+}
+
+.optionBase:hover {
+  background-color: #f1f4ff;
+}
+
+.selectedOption {
+  background-color: #eaf1fe;
+  border-color: #b2cff8;
+}
+
+.correctOption {
+  background-color: #d4edda;
+  border-color: #c3e6cb;
+}
+
+.incorrectOption {
+  background-color: #f8d7da;
+  border-color: #f5c6cb;
+}
+
+.partialOption {
+  background-color: #eaf735;
+  border-color: #eaf735;
+}
+
+/* Letter box */
+.letterBox {
+  width: 40px;
+  height: 40px;
+  font-weight: bold;
+  border-radius: 50%;
+  background-color: #eaeaea;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 1rem;
+  color: #333;
+}
+
+/* Input box for open-ended questions */
+/* Input box for open-ended questions */
+.inputBox {
+  width: 100%;
+  height: 80px; /* Adjust height */
+  padding: 1rem;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  font-size: 1rem;
+  background-color: #f1f4ff;
+  outline: none;
+  transition: border 0.3s ease;
+}
+
+.inputBox:focus {
+  border-color: #4e8dff;
+}
+
+/* Input label for open-ended questions */
+.inputLabel {
+  font-size: 1rem;
+  font-weight: bold;
+  color: #333;
+  display: block;
+  margin-left: 5%; /* Align label with the input box */
+  margin-bottom: 0.5rem; /* Add some space below the label */
+}
+
+
+/* Buttons */
+.lockButton,
+.nextButton,
+.finishButton {
+  background-color: #4e8dff;
+  color: white;
+  border: none;
+  border-radius: 24px;
+  padding: 0.8rem 2rem;
+  font-size: 1rem;
+  cursor: pointer;
+  margin-top: 1rem;
+  transition: background-color 0.3s ease;
+}
+
+.lockButton:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.lockButton:hover,
+.nextButton:hover,
+.finishButton:hover {
+  background-color: #3b75e0;
+}
+
+/* Toggle answer button */
+/* Open-ended container */
+.openEndedContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin-top: 1rem;
+  width: 100%;
+  text-align: left;
+  padding-left: 50px; /* Reduced padding to move it further left */
+  margin-left: -2rem; /* Added negative margin to shift it left */
+}
+
+
+.inputBox {
+  width: 90%; /* Adjust width to span most of the container */
+  min-height: 150px; /* Set a minimum height to make it tall like a textarea */
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  font-size: 1rem;
+  background-color: #f1f4ff;
+  padding: 1rem;
+  outline: none;
+  transition: border 0.3s ease;
+  resize: none; /* Disable manual resizing if needed */
+  margin-top: 0.5rem;
+}
+
+.inputBox:focus {
+  border-color: #4e8dff;
+}
+
+.subtext {
+  font-size: 0.9rem;
+  color: #8c8c8c;
+  margin-top: 0.5rem;
+}
+
+h3 {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #333;
+  text-align: left; /* Ensure the question aligns to the left */
+  margin-bottom: 1rem;
+}
+
+/* Toggle answer button */
+.toggleButton {
+  background-color: transparent;
+  color: #4e8dff;
+  border: 2px solid #4e8dff;
+  border-radius: 24px;
+  padding: 0.8rem 1.5rem;
+  font-size: 1rem;
+  cursor: pointer;
+  margin-top: 1rem;
+  transition: all 0.3s ease;
+}
+
+.toggleButton:hover {
+  background-color: #eef4ff;
+}
+
+/* Answer box styling */
+.answerBox {
+  font-size: 1rem;
+  margin-top: 1rem;
+  color: #333;
+  font-style: italic;
+}
+
+/* Correct and incorrect answers */
+.correctOption {
+  color: green;
+  font-weight: bold;
+  margin-top: 1rem;
+}
+
+.incorrectOption {
+  color: red;
+  font-weight: bold;
+  margin-top: 1rem;
+}
+
+
+.toggleButton:hover {
+  background-color: #eef4ff;
+}
+
+/* Subtext for open-ended questions */
+.subtext {
+  font-size: 0.85rem;
+  color: #8c8c8c;
+  margin-top: 0.5rem;
+}
+
+/* Button container */
+.buttonContainer {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 2rem;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .container {
+    max-width: 90%;
   }
-  
-  .questionCard {
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    padding: 1rem;
-    margin-bottom: 1rem;
+
+  .inputBox {
+    font-size: 0.9rem;
   }
-  
-  .optionBase {
-    display: flex;
-    align-items: center;
-    border-radius: 4px;
-    padding: 0.75rem;
-    margin-bottom: 0.5rem;
-    cursor: pointer;
-    border: 1px solid #ddd;
-  }
-  
-  .letterBox {
-    width: 30px;
-    font-weight: bold;
-    margin-right: 0.5rem;
-    text-align: center;
-    border-right: 1px dashed #ccc;
-    padding-right: 0.5rem;
-  }
-  
-  .selectedOption {
-    background-color: #eaf1fe;
-    border: 1px solid #b2cff8;
-  }
-  
-  .correctOption {
-    background-color: #d4edda;
-    border-color: #c3e6cb;
-  }
-  
-  .incorrectOption {
-    background-color: #f8d7da;
-    border-color: #f5c6cb;
-  }
-  
+
   .lockButton,
   .nextButton,
-  .finishButton {
-    background-color: #6c5ce7;
-    color: #fff;
-    border: none;
-    border-radius: 4px;
-    padding: 0.6rem 1.2rem;
-    cursor: pointer;
-  }
-  
-  .nextButton {
-    margin-right: 1rem;
-  }
-  
-  .lockButton:disabled {
-    background-color: #ccc;
-    cursor: not-allowed;
-  }
-  
-
+  .finishButton,
   .toggleButton {
-    background-color: #007bff;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    padding: 0.5rem 1rem;
-    cursor: pointer;
-    margin: 0.5rem 0;
+    font-size: 0.9rem;
+    padding: 0.6rem 1.5rem;
   }
-  
-  .answerBox {
-    margin-top: 0.5rem;
-    font-style: italic;
-    color: #333;
-  }
+}
 
-  
-  
-  
+.textareaBox {
+  width: 80%; /* Adjusted width */
+  height: 150px; /* Set height */
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  font-size: 1rem;
+  background-color: #f1f4ff;
+  padding: 1rem;
+  outline: none;
+  resize: none; /* Disable resizing */
+  overflow-y: auto; /* Allow vertical scrolling */
+  transition: border 0.3s ease;
+}
+
+.textareaBox:focus {
+  border-color: #4e8dff;
+  background-color: #eef4ff;
+}
+
+.partialOption {
+  color: rgb(185, 187, 54);
+  font-weight: bold;
+  margin-top: 1rem;
+}
+
+

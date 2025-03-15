@@ -1,0 +1,227 @@
+/* Container for the entire account dropdown */
+.account-dropdown-container {
+  position: relative;
+  display: inline-block; /* So the dropdown can position itself next to the button */
+  font-family: 'Helvetica Neue', Arial, sans-serif; /* or your preferred font */
+}
+
+/* The main button (e.g., user avatar/name) when authenticated */
+.account-dropdown-btn {
+  /* Changed from dark (#333) to white (#fff) */
+  background-color: #fff;
+  /* Text color is now a dark gray/black */
+  color: #2c2c2c;
+  
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  
+  /* Add a subtle border and fully rounded corners for that "pill" look */
+  border: 1px solid #ddd;
+  border-radius: 9999px;
+
+  /* Make the button a flex container to align icon + text */
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem; /* space between icon and text */
+
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+/* Hover effect for the dropdown button */
+.account-dropdown-btn:hover {
+  background-color: #f1f1f1;
+}
+
+/* The hidden dropdown menu itself */
+.account-dropdown-content {
+  display: none;               /* Hidden by default */
+  position: absolute;
+  right: 0;                    /* Align to the right edge of the container */
+  background-color: #f9f9f9;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px rgba(0,0,0,0.2);
+  z-index: 1;                  /* Ensure it appears above other elements */
+  border-radius: 8px;          /* Slight rounding for a modern look */
+  overflow: hidden;            /* Hide edges if content extends */
+}
+
+/* Each link inside the dropdown (e.g., My Account, Logout) */
+.account-dropdown-content .nav-link {
+  display: block;
+  text-decoration: none;
+  padding: 12px 16px;
+  color: #333;
+  font-size: 1rem;
+  transition: background-color 0.2s ease;
+}
+
+/* Hover effect for dropdown links */
+.account-dropdown-content .nav-link:hover {
+  background-color: #f1f1f1;
+}
+
+/* Show the dropdown on hover */
+.account-dropdown-container:hover .account-dropdown-content {
+  display: block;
+}
+
+/* ------------------------------------------ */
+/* UNAUTHENTICATED LINKS (Login / Sign Up)    */
+/* ------------------------------------------ */
+
+.nav-link {
+  color: #2c2c2c;
+  text-decoration: none;
+  font-size: 1.1rem;
+  font-weight: 500;
+  transition: color 0.2s ease;
+  padding: 0.5rem 1rem;
+  border-radius: 9999px; /* pill shape */
+  /* remove default margin so the first link has no offset */
+  margin-left: 0;        
+}
+
+.nav-link + .nav-link {
+  margin-left: 1rem;
+}
+
+/* Hover effect */
+.nav-link:hover {
+  color: #575757;
+  background-color: #e2e2e2;
+}
+
+/* ------------------------------------------ */
+/* NAVBAR LAYOUT                              */
+/* ------------------------------------------ */
+
+.navbar {
+  width: 100%;
+  background-color: #fff;       /* or your preferred color */
+  border-bottom: 1px solid #eee; /* optional subtle border */
+}
+
+.navbar-container {
+  display: flex;
+  justify-content: flex-end; /* push links to the right */
+  align-items: center;
+  padding: 0.5rem 1rem;
+  background-color: #fff;
+}
+
+/* Optional: If you want a custom icon next to the username in the dropdown btn */
+/* The user icon (circle avatar) inside the button */
+.user-icon {
+  background: url("img/person-icon.svg") no-repeat center center / cover;
+  width: 24px;
+  height: 24px;
+}
+
+
+/* For top-level links (e.g., "Account", "Login", "Sign Up") in the navbar */
+.navbar .account-link {
+  background-color: transparent;
+  color: #2c2c2c;
+  font-size: 1rem;
+  padding: 0.5rem 1rem;
+  border-radius: 9999px;  /* pill shape, optional */
+  text-decoration: none;
+  transition: background-color 0.2s ease;
+  margin-left: 1rem;     /* spacing if needed */
+}
+
+/* Hover effect for top-level navbar links */
+.navbar .account-link:hover {
+  background-color: #e2e2e2;
+}
+
+
+/* The dropdown menu items (e.g., "My Account", "Logout") */
+.account-dropdown-content .account-link {
+  display: block;
+  text-decoration: none;
+  padding: 12px 16px;
+  color: #333;
+  font-size: 1rem;
+  background-color: transparent;  /* no background by default */
+  transition: background-color 0.2s ease;
+  margin-left: 0;  /* remove any leftover margin */
+}
+
+/* Hover effect for dropdown items */
+.account-dropdown-content .account-link:hover {
+  background-color: #f1f1f1;
+}
+
+/* HOME LINK (left) */
+.home-link {
+  position: absolute;
+  top: 0;
+  left: 0;
+  color: #2c2c2c;
+  text-decoration: none;
+  font-size: 1.5rem;
+  font-weight: 500;
+  transition: color 0.2s ease;
+  padding: 0.5rem 1rem;
+  border-radius: 9999px; /* pill shape */
+  margin: 0;
+}
+.home-link:hover {
+  color: #575757;
+  background-color: #e2e2e2;
+}
+
+/* Account Information Container */
+.account-container {
+  max-width: 600px;              /* Limit the container width */
+  margin: 2rem auto;             /* Center horizontally with vertical spacing */
+  padding: 2rem;                 /* Inner padding */
+  border: 1px solid #ddd;        /* Light border */
+  border-radius: 12px;           /* Rounded corners */
+  background-color: #f8faff;     /* Light background color */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);  /* Subtle shadow */
+  font-family: 'Roboto', sans-serif; /* Use an interesting font (include via Google Fonts) */
+}
+
+/* Header styling */
+.account-container h2 {
+  font-size: 1.8rem;
+  margin-bottom: 1.5rem;
+  color: #333;
+  text-align: center;
+}
+
+/* Paragraph styling */
+.account-container p {
+  font-size: 1.1rem;
+  color: #555;
+  margin-bottom: 0.8rem;
+  line-height: 1.4;
+}
+
+/* Bold labels */
+.account-container p strong {
+  font-weight: 600;
+  color: #333;
+}
+
+/* Button styling */
+.account-container button {
+  display: block;
+  width: 100%;
+  background-color: #7367f0;
+  color: #fff;
+  border: none;
+  padding: 0.75rem;
+  font-size: 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  margin-top: 1.5rem;
+}
+
+.account-container button:hover {
+  background-color: #6156ce;
+}

@@ -1,0 +1,246 @@
+/*********************************
+  Top Bar / Header Row
+**********************************/
+.quiz-header-row {
+  display: flex;
+  align-items: center;        /* Vertically center the content */
+  justify-content: space-between;
+  background-color: #f8faff;  /* Soft background */
+  padding: 0.75rem 1rem;
+  margin-bottom: 1rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.quiz-header-row h1 {
+  margin: 0;                 /* Keep the heading snug */
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #2c2c2c;
+}
+
+/*********************************
+  Buttons (Outline / Purple)
+**********************************/
+.quiz-buttons {
+  display: flex;
+  gap: 1rem; /* Spacing between buttons */
+  margin-top: 7rem;           /* Increase to push buttons lower */
+
+}
+
+.quiz-btn {
+  background: transparent;
+  color: #7367f0;
+  border: 2px solid #7367f0;
+  padding: 0.6rem 1.3rem;
+  font-size: 1rem;
+  border-radius: 999px; /* Pill shape */
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.quiz-btn:hover {
+  background-color: #7367f0;
+  color: #fff;
+}
+
+/*********************************
+  Main container for each question card
+**********************************/
+.question-edit-card {
+  background-color: #f8faff;
+  border-radius: 12px;
+  padding: 1.2rem;
+  margin-bottom: 2rem;
+  position: relative;
+  box-shadow:
+    0 4px 10px rgba(0, 0, 0, 0.15),
+    0 -4px 10px rgba(0, 0, 0, 0.10);
+}
+
+/* Header: "Question X" label big and bold */
+.question-edit-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.question-edit-header h3 {
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: #333;
+}
+
+/* The trash/delete button in top-right corner: round with an icon */
+.question-edit-delete-btn {
+  background-color: #ff5c5c;
+  border: none;
+  border-radius: 50%;
+  color: #fff;
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.1rem;
+  transition: background-color 0.2s ease;
+}
+
+.question-edit-delete-btn:hover {
+  background-color: #e60000;
+}
+
+/*********************************
+  Question Type column (left side)
+**********************************/
+.question-type-col {
+  display: flex;
+  flex-direction: column;
+  width: 220px;
+  margin-bottom: 1.5rem;
+}
+
+.question-type-col label {
+  margin-bottom: 0.4rem;
+  font-weight: 600;
+  color: #444;
+}
+
+.question-type-col select {
+  padding: 0.5rem;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  background-color: #fff;
+  cursor: pointer;
+}
+
+/*********************************
+  Fields (Labels, Textareas, Inputs)
+**********************************/
+.question-edit-field {
+  margin-bottom: 1.2rem;
+}
+
+.question-edit-field label {
+  display: block;
+  margin-bottom: 0.4rem;
+  font-weight: 600;
+  color: #444;
+}
+
+/* Larger text area with subtle background for the question itself */
+.question-edit-field textarea {
+  width: 99%;
+  min-height: 100px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  padding: 0.7rem;
+  background-color: #fefeff;
+  font-size: 1rem;
+  color: #333;
+  resize: none;
+}
+
+/* For multiple-choice: text input styling */
+.question-edit-field input[type="text"] {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background-color: #fff;
+  color: #333;
+  margin-bottom: 0.5rem;
+}
+
+/*********************************
+  Multiple-Choice Styles
+**********************************/
+.mc-options-title {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 0.6rem;
+  color: #444;
+}
+
+.mc-option-row {
+  display: flex;
+  align-items: center;
+  background-color: #f3f6ff;
+  border-radius: 8px;
+  padding: 0.6rem;
+  margin-bottom: 0.4rem;
+  transition: background-color 0.2s ease;
+  border: 1px solid #ddd;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+}
+
+.mc-option-row:hover {
+  background-color: #e9edfd;
+}
+
+/* Radio input on the left for MC options */
+.mc-option-row input[type="radio"] {
+  margin-right: 0.8rem;
+  transform: scale(1.2);
+  accent-color: #7367f0;
+  cursor: pointer;
+}
+
+/* The text field for that MC option */
+.mc-option-row input[type="text"] {
+  flex: 1;
+  border: none;
+  outline: none;
+  background-color: transparent;
+  font-size: 1rem;
+  color: #333;
+}
+
+/*********************************
+  True/False Styling
+**********************************/
+.tf-option {
+  display: flex;
+  align-items: center;
+  margin: 0.8rem 0;
+}
+
+.tf-option input[type="radio"] {
+  margin-right: 0.75rem;
+  transform: scale(1.5);
+  accent-color: #7367f0;
+  cursor: pointer;
+}
+
+.tf-option span {
+  font-size: 1rem;
+  color: #333;
+  margin-left: 0.75rem;
+}
+
+/*********************************
+  Bottom Row: Save Button
+**********************************/
+.question-edit-bottom-row {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 1rem;
+}
+
+.question-save-btn {
+  background-color: #7367f0;
+  color: #fff;
+  border: none;
+  padding: 0.6rem 1.3rem;
+  font-size: 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.question-save-btn:hover {
+  background-color: #6156ce;
+}

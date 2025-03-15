@@ -23,6 +23,7 @@
   width: 100%;
   min-height: 250px;
   margin-top: 0.5rem;
+  resize: none;
 
   /* Rounded corners + subtle background */
   border-radius: 8px;
@@ -122,8 +123,8 @@
   background: #fff;
   border-radius: 8px;
   padding: 2rem 3rem; /* Increased padding for better spacing */
-  min-width: 600px; /* Increased width */
-  min-height: 400px; /* Added height to make it larger */
+  min-width: 800px; /* Increased width */
+  min-height: 500px; /* Added height to make it larger */
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
   display: flex;
   flex-direction: column; /* Ensures content flows vertically */
@@ -137,13 +138,62 @@
   margin-bottom: 1rem;
 }
 
-/* Dropdown fields */
-.quiz-generator-dropdown {
-  width: 100%;
-  margin-bottom: 1rem;
-  padding: 0.4rem;
-  border-radius: 4px;
+
+.quiz-generator-label {
+  display: block;          /* Stacks label above the select */
+  margin-bottom: 0.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #28338b;          /* Darkish blue */
 }
+
+
+.quiz-generator-dropdown {
+  /* Existing styles (example) */
+  display: block;
+  width: 100%;
+  max-width: 300px;
+  padding: 0.75rem 1rem;
+  box-sizing: border-box;
+  background-color: #f5f7ff;
+  border: 1px solid #d8def3;
+  border-radius: 8px;
+  font-size: 1rem;
+  color: #28338b;
+  font-weight: 500;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  background: url('data:image/svg+xml;utf8,<svg fill="%2328338b" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/></svg>') 
+    no-repeat right 1rem center / 1rem 1rem #f5f7ff;
+  background-clip: padding-box;
+  cursor: pointer;
+  outline: none;
+
+  /* NEW: Adjust the top margin to move it higher */
+  margin-top: -8px !important;
+}
+
+
+.quiz-generator-dropdown:focus {
+  border-color: #556afe; 
+  box-shadow: 0 0 0 2px rgba(85,106,254,0.2);
+}
+
+.quiz-generator-label-question-type {
+  margin-top: 0 !important;
+}
+
+.quiz-generator-label-question-type {
+  margin-top: -8px; 
+}
+
+#quiz-generator-question-type.quiz-generator-dropdown {
+  margin-top: -8px;      /* Move the Question Type dropdown 8px higher */
+  margin-bottom: 1.5rem; /* Add extra spacing below so it's not too close to the next element */
+}
+
+
 
 /* Modal actions container */
 .quiz-generator-modal-actions {
@@ -162,7 +212,9 @@
   font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
-  transition: background-color 0.2s, color 0.2s;
+ transition: background-color 0.2s, color 0.2s;
+ margin-right: 1rem; /* Add spacing to the right */
+
 }
 
 .quiz-generator-cancel-btn:hover {
@@ -231,3 +283,143 @@
   font-weight: bold;
   color: #333;
 }
+
+
+.quiz-generator-label {
+  display: block;               /* Stacks label above the input */
+  margin-bottom: 0.5rem;
+  font-weight: 600;             /* Bold label text */
+  font-size: 1rem;              /* Adjust as needed */
+  color: #28338b;               /* Dark-ish blue (change to match your theme) */
+}
+
+
+.quiz-generator-input {
+  display: block;
+  width: 100%;
+  max-width: 100%;              /* Ensures no overflow in narrow modals */
+  padding: 0.75rem 1rem;
+  margin-bottom: 1rem;          /* Spacing below the input */
+  box-sizing: border-box;
+
+  /* Background & Border */
+  background-color: #f5f7ff;    /* Light, soft blue background */
+  border: 1px solid #d8def3;    /* Subtle border color */
+  border-radius: 12px;          /* Smoothly rounded corners */
+
+  /* Font & Color */
+  font-size: 1rem;
+  color: #28338b;
+  font-weight: 500;
+
+  /* Remove native outline (we'll define our own focus style) */
+  outline: none;
+
+  /* Transition for focus effect */
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+
+.quiz-generator-input:focus {
+  border-color: #556afe;
+  box-shadow: 0 0 0 2px rgba(85, 106, 254, 0.2);
+}
+
+.quiz-generator-input-container {
+  position: relative; 
+  width: 100%;
+  margin-bottom: 1rem;
+}
+
+.quiz-generator-input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0.75rem 3.5rem 0.75rem 1rem; 
+  /* extra right padding for the character count */
+  
+  /* Example styles to match your design */
+  background-color: #f5f7ff;
+  border: 1px solid #d8def3;
+  border-radius: 12px;
+  font-size: 1rem;
+  color: #28338b;
+  font-weight: 500;
+  outline: none;
+}
+
+/* Focus styling (optional) */
+.quiz-generator-input:focus {
+  border-color: #556afe;
+  box-shadow: 0 0 0 2px rgba(85,106,254,0.2);
+}
+
+/* Character count on the right, vertically centered */
+.dashboard-charcount {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 1rem;
+
+  /* Use flex to center vertically */
+  display: flex;
+  align-items: center;
+
+  /* Typography */
+  color: #666;
+  font-size: 1.1rem;
+
+  /* Let clicks go through to the input */
+  pointer-events: none; 
+}
+
+
+
+/* Ensure the input field container is relatively positioned */
+.input-field-container {
+  position: relative;
+}
+
+/* Blur only the textarea when needed */
+.blurred textarea {
+  filter: blur(4px);
+  pointer-events: none;
+  user-select: none;
+}
+
+/* Overlay for the input field area */
+.field-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.8);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 10;
+}
+
+.field-overlay p {
+  font-size: 1.2rem;
+  margin-bottom: 1rem;
+}
+
+.overlay-btn {
+  margin: 0 0.5rem;
+  padding: 0.5rem 1rem;
+  background-color: #4e8dff;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  text-decoration: none;
+}
+
+.overlay-btn:hover {
+  background-color: #3b75e0;
+}
+
+
+
+
