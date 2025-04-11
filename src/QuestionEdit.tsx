@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from "react";
 import "./EditQuiz.css";
 import axios from "axios";
+import { Draggable } from "@hello-pangea/dnd"; // Import Draggable
+import { toast,  } from "react-toastify";
+
 
 function getCookie(name: string): string | null {
   let cookieValue: string | null = null;
@@ -35,9 +38,11 @@ interface Props {
   onSave: (updated: Question) => void;
   onDelete?: (id: number) => void;
   ordinal: number; // e.g. "Question 1"
+  onChange?: (updated: Question) => void;
+
 }
 
-const QuestionEdit: React.FC<Props> = ({ question, onDelete, onSave, ordinal }) => {
+const QuestionEdit: React.FC<Props> = ({ question, onDelete, onSave, ordinal, onChange }) => {
   // The main question type
   const [qType, setQType] = useState<QuestionType>(question.question_type);
 
@@ -52,66 +57,97 @@ const QuestionEdit: React.FC<Props> = ({ question, onDelete, onSave, ordinal }) 
   const [mcCorrectAnswer, setMcCorrectAnswer] = useState<string>("");  // "A", "B", "C", or "D"
   const [tfCorrectAnswer, setTfCorrectAnswer] = useState<string>("True"); // "True" or "False"
   const [oeCorrectAnswer, setOeCorrectAnswer] = useState<string>("");  // any text
+  const [savedMCAnswer, setSavedMCAnswer] = useState<string>("");
 
   // On mount, populate whichever local state is relevant
-  useEffect(() => {
+   // Initialize states based on the question prop.
+   useEffect(() => {
     if (question.question_type === "MC") {
-      setMcCorrectAnswer((question.correct_answer || "").toUpperCase()); // e.g. "B"
+      const initialMC = (question.correct_answer || "").toUpperCase();
+      setMcCorrectAnswer(initialMC);
+      setSavedMCAnswer(initialMC);
     } else if (question.question_type === "TF") {
       setTfCorrectAnswer(question.correct_answer === "False" ? "False" : "True");
     } else {
-      // OE
       setOeCorrectAnswer(question.correct_answer || "");
     }
   }, [question]);
 
-  // If user changes question type, do not wipe out the old MC or TF states, 
-  // but set a default if we pick TF and it has nothing, or OE, etc.
   const handleTypeChange = (newType: QuestionType) => {
-    setQType(newType);
+    // Create a temporary variable for the MC answer.
+    let newMC = mcCorrectAnswer;
+  
+    // If switching away from MC, save the current MC answer.
+    if (qType === "MC" && newType !== "MC") {
+      setSavedMCAnswer(mcCorrectAnswer);
+    }
+  
     if (newType === "TF") {
+      // For True/False, ensure a default is set.
       if (tfCorrectAnswer !== "True" && tfCorrectAnswer !== "False") {
         setTfCorrectAnswer("True");
       }
+      // (Do not update MC here because we want to preserve it if already valid.)
+    } else if (newType === "MC") {
+      // When switching to MC, restore the saved MC answer if valid; otherwise default to "A"
+      newMC = (savedMCAnswer && ["A", "B", "C", "D"].includes(savedMCAnswer))
+        ? savedMCAnswer
+        : "A";
+      // Force update mcCorrectAnswer with newMC immediately.
+      setMcCorrectAnswer(newMC);
+    } else {
+      // For open-ended, we don't update the MC answer.
     }
-    else if (newType === "MC") {
-      // If we haven't stored a valid letter, default to "A"
-      const validLetters = ["A", "B", "C", "D"];
-      if (!validLetters.includes(mcCorrectAnswer.toUpperCase())) {
-        setMcCorrectAnswer("A");
-      }
+  
+    // Update the question type
+    setQType(newType);
+  
+    // Build the updated question object using the computed newMC value
+    const updated: Question = {
+      ...question,
+      question_type: newType,
+      text: qText,
+      option_a: optionA,
+      option_b: optionB,
+      option_c: optionC,
+      option_d: optionD,
+      correct_answer:
+        newType === "MC"
+          ? newMC.toUpperCase()  // Use our temporary newMC value here.
+          : newType === "TF"
+          ? tfCorrectAnswer
+          : oeCorrectAnswer,
+    };
+  
+    if (newType === "TF") {
+      (updated as any).tf_option_true = "True";
+      (updated as any).tf_option_false = "False";
     }
-    else {
-      // newType is "OE"
-      // If you want to automatically set MC to "A" whenever you switch away from MC:
-      // we can do it here or inside handleSave. 
-      // This sets it so the next time we switch back to MC, it shows A.
-      const validLetters = ["A", "B", "C", "D"];
-      if (!validLetters.includes(mcCorrectAnswer.toUpperCase())) {
-        setMcCorrectAnswer("A");
-      }
-    }
+  
+    console.log("[DEBUG] Auto-saving on type change with updated object:", updated);
+    onSave(updated);
   };
+  
+  
+
 
   // On Save, pick whichever local state is relevant for final "correct_answer"
   const handleSave = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-
+  
     let finalCorrect = "";
     if (qType === "MC") {
-      finalCorrect = mcCorrectAnswer.toUpperCase();  // "A", "B", "C", or "D"
+      // Use "A" if mcCorrectAnswer is empty after trimming; otherwise, use the saved value.
+      finalCorrect = mcCorrectAnswer.trim() === "" ? "A" : mcCorrectAnswer.toUpperCase();
     } else if (qType === "TF") {
       finalCorrect = tfCorrectAnswer;  // "True" or "False"
-      // Also, since user wants "MC" to be forced to 'A' whenever we are TF or OE:
-      setMcCorrectAnswer("A");
+      setMcCorrectAnswer("A");  // (optional) You may keep this if you want to reset MC when switching to TF
     } else {
-      // OE
+      // For open-ended, just use the open-ended answer. Do not override MC.
       finalCorrect = oeCorrectAnswer;
-      // Also, set MC to "A"
-      setMcCorrectAnswer("A");
+      // (Remove the forced setMcCorrectAnswer("A"))
     }
-
-    // Build the updated question object
+  
     const updated: Question = {
       ...question,
       question_type: qType,
@@ -122,16 +158,14 @@ const QuestionEdit: React.FC<Props> = ({ question, onDelete, onSave, ordinal }) 
       option_d: optionD,
       correct_answer: finalCorrect,
     };
-
-    // If your backend also needs tf_option_true / tf_option_false
+  
     if (qType === "TF") {
       (updated as any).tf_option_true = "True";
       (updated as any).tf_option_false = "False";
     }
-
+  
     console.log("Updated object to submit:", updated);
-
-    // Send to backend
+  
     const csrftoken = getCookie("csrftoken");
     try {
       const response = await axios.put(
@@ -143,16 +177,16 @@ const QuestionEdit: React.FC<Props> = ({ question, onDelete, onSave, ordinal }) 
         }
       );
       console.log("Question updated successfully:", response.data);
-
-      // Let the parent know
       onSave(updated);
-
-      alert("Question updated successfully.");
+      toast.success("Question updated successfully.", { containerId: "local" });
     } catch (error) {
       console.error("Error updating question:", error);
-      alert("Error saving changes. Please try again.");
+      toast.error("Error saving changes. Please try again.");
     }
   };
+  
+
+
 
   const handleDelete = async () => {
     console.log("handleDelete called for question:", question.question_id);
@@ -175,173 +209,241 @@ const QuestionEdit: React.FC<Props> = ({ question, onDelete, onSave, ordinal }) 
       }
     } catch (err) {
       console.error("Error soft-deleting question:", err);
-      alert("Error deleting question. Please try again.");
+      toast.error("Error deleting question. Please try again.");
     }
   };
 
+
+ 
   return (
-    <div className="question-edit-card">
-      <div className="question-edit-header">
-        <h3>Question {ordinal}</h3>
-        <div>
-          <button className="question-edit-delete-btn" onClick={handleDelete}>
-            <span role="img" aria-label="trash">
-              🗑
-            </span>
-          </button>
-        </div>
-      </div>
+    <Draggable draggableId={question.question_id.toString()} index={ordinal - 1}>
+      {(provided) => (
+        <div
+          className="question-edit-card"
+          ref={provided.innerRef}
+          {...provided.draggableProps}
+          {...provided.dragHandleProps}
+        >
+          <div className="question-edit-header">
+            <h3>Question {ordinal}</h3>
+            <div>
+              <button className="question-edit-delete-btn" onClick={handleDelete}>
+                <span role="img" aria-label="trash">
+                  🗑
+                </span>
+              </button>
+            </div>
+          </div>
 
-      {/* QUESTION TYPE SELECT */}
-      <div className="question-edit-type-row">
-        <div className="question-type-col">
-          <label>Question Type</label>
-          <select value={qType} onChange={(e) => handleTypeChange(e.target.value as QuestionType)}>
-            <option value="MC">Multiple Choice</option>
-            <option value="OE">Open Ended</option>
-            <option value="TF">True/False</option>
-          </select>
-        </div>
-      </div>
 
-      {/* QUESTION TEXT */}
-      <div className="question-edit-field">
-        <label>Question</label>
-        <textarea
-          value={qText}
-          onChange={(e) => setQText(e.target.value)}
-          placeholder="Enter the question..."
-          maxLength={500}  // Limit to 500 characters
-        />
-      </div>
+          {/* QUESTION TYPE SELECT */}
+          <div className="question-edit-type-row">
+            <div className="question-type-col">
+              <label>Question Type</label>
+              <select value={qType} onChange={(e) => handleTypeChange(e.target.value as QuestionType)}>
+                <option value="MC">Multiple Choice</option>
+                <option value="OE">Open Ended</option>
+                <option value="TF">True/False</option>
+              </select>
+            </div>
+          </div>
 
-      {/* MULTIPLE CHOICE */}
-      {qType === "MC" && (
-        <div className="question-edit-mc-options">
-          <label className="mc-options-title">Options</label>
-
-          {/* Option A */}
-          <div className="mc-option-row">
-            <input
-              type="radio"
-              name={`mc-correct-${question.question_id}`}
-              value="A"
-              checked={mcCorrectAnswer.toUpperCase() === "A"}
-              onChange={() => setMcCorrectAnswer("A")}
-            />
-            <input
-              type="text"
-              placeholder="Option A..."
-              value={optionA}
-              onChange={(e) => setOptionA(e.target.value)}
-              maxLength={150}  // Limit to 150 characters per option
+          {/* QUESTION TEXT */}
+          <div className="question-edit-field">
+            <label>Question</label>
+            <textarea
+              value={qText}
+              onChange={(e) => {
+                setQText(e.target.value);
+                onChange && onChange({ ...question, text: e.target.value });
+              }}
+              placeholder="Enter the question..."
+              maxLength={200}
             />
           </div>
 
-          {/* Option B */}
-          <div className="mc-option-row">
-            <input
-              type="radio"
-              name={`mc-correct-${question.question_id}`}
-              value="B"
-              checked={mcCorrectAnswer.toUpperCase() === "B"}
-              onChange={() => setMcCorrectAnswer("B")}
-            />
-            <input
-              type="text"
-              placeholder="Option B..."
-              value={optionB}
-              onChange={(e) => setOptionB(e.target.value)}
-              maxLength={150}
-            />
-          </div>
+          {/* MULTIPLE CHOICE */}
+          {qType === "MC" && (
+            <div className="question-edit-mc-options">
+              <label className="mc-options-title">Options</label>
+              {["A", "B", "C", "D"].map((letter) => {
+                // Determine current option text.
+                let optionText = "";
+                if (letter === "A") optionText = optionA;
+                else if (letter === "B") optionText = optionB;
+                else if (letter === "C") optionText = optionC;
+                else if (letter === "D") optionText = optionD;
 
-          {/* Option C */}
-          <div className="mc-option-row">
-            <input
-              type="radio"
-              name={`mc-correct-${question.question_id}`}
-              value="C"
-              checked={mcCorrectAnswer.toUpperCase() === "C"}
-              onChange={() => setMcCorrectAnswer("C")}
-            />
-            <input
-              type="text"
-              placeholder="Option C..."
-              value={optionC}
-              onChange={(e) => setOptionC(e.target.value)}
-              maxLength={150}
-            />
-          </div>
+                const isSelected = mcCorrectAnswer.toUpperCase() === letter;
 
-          {/* Option D */}
-          <div className="mc-option-row">
-            <input
-              type="radio"
-              name={`mc-correct-${question.question_id}`}
-              value="D"
-              checked={mcCorrectAnswer.toUpperCase() === "D"}
-              onChange={() => setMcCorrectAnswer("D")}
-            />
-            <input
-              type="text"
-              placeholder="Option D..."
-              value={optionD}
-              onChange={(e) => setOptionD(e.target.value)}
-              maxLength={150}
-            />
+                // Function to build updated question and call onSave.
+                const triggerSave = (updatedFields: Partial<Question>) => {
+                  const updated: Question = {
+                    ...question,
+                    question_type: qType,
+                    text: qText,
+                    option_a: optionA,
+                    option_b: optionB,
+                    option_c: optionC,
+                    option_d: optionD,
+                    // Use the updated correct answer if provided, else current.
+                    correct_answer: updatedFields.correct_answer || mcCorrectAnswer,
+                    ...updatedFields,
+                  };
+                  onSave(updated);
+                };
+
+                return (
+                  <div key={letter} className="mc-option-row">
+                    <label>
+                      <input
+                        type="radio"
+                        name={`mc-correct-${question.question_id}`}
+                        value={letter}
+                        checked={isSelected}
+                        onChange={(e) => {
+                          setMcCorrectAnswer(e.target.value);
+                          // Do not trigger save immediately on radio change.
+                        }}
+                        onBlur={() => {
+                          // When leaving the radio, trigger save with current correct answer.
+                          triggerSave({ correct_answer: mcCorrectAnswer });
+                        }}
+                      />
+                    </label>
+                    <input
+                      type="text"
+                      placeholder={`Option ${letter}...`}
+                      value={optionText}
+                      onChange={(e) => {
+                        const newValue = e.target.value;
+                        if (letter === "A") setOptionA(newValue);
+                        else if (letter === "B") setOptionB(newValue);
+                        else if (letter === "C") setOptionC(newValue);
+                        else if (letter === "D") setOptionD(newValue);
+                      }}
+                      onBlur={(e) => {
+                    
+                        if (letter === "A") {
+                          triggerSave({ option_a: e.target.value });
+                        } else if (letter === "B") {
+                          triggerSave({ option_b: e.target.value });
+                        } else if (letter === "C") {
+                          triggerSave({ option_c: e.target.value });
+                        } else if (letter === "D") {
+                          triggerSave({ option_d: e.target.value });
+                        }
+                      }}
+                    />
+                  </div>
+                );
+              })}
+            </div>
+          )}
+
+
+
+
+
+          {/* OPEN-ENDED */}
+          {qType === "OE" && (
+            <div className="question-edit-field">
+              <label>Answer</label>
+              {(() => {
+                // Define an autoSave function that builds an updated question object.
+                const autoSave = (newAnswer: string) => {
+                  const updated: Question = {
+                    ...question,
+                    question_type: qType,
+                    text: qText,
+                    // For open-ended questions, the "correct_answer" field holds the answer.
+                    correct_answer: newAnswer,
+                  };
+                  // Call the parent's onSave callback to update the quiz state.
+                  onSave(updated);
+                };
+
+                return (
+                  <textarea
+                    value={oeCorrectAnswer}
+                    onChange={(e) => {
+                      const newVal = e.target.value;
+                      setOeCorrectAnswer(newVal);
+                      autoSave(newVal);
+                    }}
+                    placeholder="Open-ended answer..."
+                    maxLength={600}  // Limit to 500 characters
+                  />
+                );
+              })()}
+              <p className="answer-subtext">
+                When taking this quiz, your response will be evaluated based on both semantic similarity and text similarity percentages to determine an overall score.
+                This approach prioritizes your intended meaning rather than exact wording.
+              </p>
+              
+            </div>
+          )}
+
+
+
+          {/* TRUE / FALSE */}
+          {qType === "TF" && (
+            <div className="question-edit-field">
+              <label>Correct Answer</label>
+              <div className="tf-option" style={{ marginBottom: "1rem" }}>
+                <input
+                  type="radio"
+                  name={`tf-${question.question_id}`}
+                  checked={tfCorrectAnswer === "True"}
+                  onChange={() => {
+                    // Update the local state.
+                    setTfCorrectAnswer("True");
+                    // Build the updated question object.
+                    const updated: Question = {
+                      ...question,
+                      question_type: qType,
+                      text: qText,
+                      correct_answer: "True",
+                    };
+                    // For TF questions, include additional fields if needed.
+                    (updated as any).tf_option_true = "True";
+                    (updated as any).tf_option_false = "False";
+                    // Call the parent's onSave callback.
+                    onSave(updated);
+                  }}
+                />
+                <span style={{ fontSize: "1rem", marginRight: "2rem" }}>True</span>
+                <input
+                  type="radio"
+                  name={`tf-${question.question_id}`}
+                  checked={tfCorrectAnswer === "False"}
+                  onChange={() => {
+                    setTfCorrectAnswer("False");
+                    const updated: Question = {
+                      ...question,
+                      question_type: qType,
+                      text: qText,
+                      correct_answer: "False",
+                    };
+                    (updated as any).tf_option_true = "True";
+                    (updated as any).tf_option_false = "False";
+                    onSave(updated);
+                  }}
+                />
+                <span style={{ fontSize: "1rem", marginLeft: "0.5rem" }}>False</span>
+              </div>
+            </div>
+          )}
+
+
+          <div className="question-edit-bottom-row">
+            <button className="question-save-btn" onClick={handleSave}>
+              Save
+            </button>
           </div>
         </div>
       )}
-
-      {/* OPEN-ENDED */}
-      {qType === "OE" && (
-        <div className="question-edit-field">
-          <label>Answer</label>
-          <textarea
-            value={oeCorrectAnswer}
-            onChange={(e) => setOeCorrectAnswer(e.target.value)}
-            placeholder="Open-ended answer..."
-            maxLength={500}  // Limit to 500 characters
-          />
-          <p className="answer-subtext">
-            When taking this quiz, your response will be evaluated based on both semantic_similarity_percentage and text_similarity_percentage to determine an overall score.
-            This approach prioritizes your intended meaning rather than exact wording.
-          </p>
-        </div>
-      )}
-
-
-      {/* TRUE / FALSE */}
-      {qType === "TF" && (
-        <div className="question-edit-field">
-          <label>Correct Answer</label>
-          <div className="tf-option" style={{ marginBottom: "1rem" }}>
-            <input
-              type="radio"
-              name={`tf-${question.question_id}`}
-              checked={tfCorrectAnswer === "True"}
-              onChange={() => setTfCorrectAnswer("True")}
-            />
-            <span style={{ fontSize: "1rem", marginRight: "2rem" }}>True</span>
-
-            <input
-              type="radio"
-              name={`tf-${question.question_id}`}
-              checked={tfCorrectAnswer === "False"}
-              onChange={() => setTfCorrectAnswer("False")}
-            />
-            <span style={{ fontSize: "1rem", marginLeft: "0.5rem" }}>False</span>
-          </div>
-        </div>
-      )}
-
-      <div className="question-edit-bottom-row">
-        <button className="question-save-btn" onClick={handleSave}>
-          Save
-        </button>
-      </div>
-    </div>
+    </Draggable>
   );
 };
 

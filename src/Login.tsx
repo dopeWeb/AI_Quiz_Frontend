@@ -62,7 +62,7 @@ const Login: React.FC<LoginProps> = ({ setIsAuthenticated }) => {
     e.preventDefault();
     try {
       const csrfToken = getCookie("csrftoken");
-      const response = await axios.post(
+      await axios.post(
         "http://localhost:8000/api/login/",
         { username, password },
         {
@@ -72,14 +72,12 @@ const Login: React.FC<LoginProps> = ({ setIsAuthenticated }) => {
           },
         }
       );
-      console.log("Login successful:", response.data);
       setSuccess("Login successful! You are now logged in.");
       setError("");
       setIsAuthenticated(true);
       navigate("/");
       window.location.reload(); // Automatically refresh the page
     } catch (err: any) {
-      console.error("Login error:", err);
       setError("Invalid credentials. Please try again.");
       setSuccess("");
     }

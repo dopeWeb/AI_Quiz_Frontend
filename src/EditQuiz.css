@@ -5,7 +5,7 @@
   display: flex;
   align-items: center;        /* Vertically center the content */
   justify-content: space-between;
-  background-color: #f8faff;  /* Soft background */
+  background-color: #fff;  /* Soft background */
   padding: 0.75rem 1rem;
   margin-bottom: 1rem;
   border-radius: 8px;
@@ -49,10 +49,11 @@
   Main container for each question card
 **********************************/
 .question-edit-card {
-  background-color: #f8faff;
+  background-color: #fff;
   border-radius: 12px;
   padding: 1.2rem;
-  margin-bottom: 2rem;
+  padding-bottom: 140px;  /* Added bottom padding to prevent overlap with fixed footer */
+  margin-bottom: 3rem;
   position: relative;
   box-shadow:
     0 4px 10px rgba(0, 0, 0, 0.15),
@@ -113,7 +114,7 @@
   padding: 0.5rem;
   border-radius: 6px;
   border: 1px solid #ccc;
-  background-color: #fff;
+  background-color: #f3f6ff;
   cursor: pointer;
 }
 
@@ -138,7 +139,7 @@
   border-radius: 8px;
   border: 1px solid #ccc;
   padding: 0.7rem;
-  background-color: #fefeff;
+  background-color: #f3f6ff;
   font-size: 1rem;
   color: #333;
   resize: none;
@@ -243,4 +244,21 @@
 
 .question-save-btn:hover {
   background-color: #6156ce;
+}
+
+.quiz-settings-row {
+  display: flex;
+  gap: 1.5rem; /* space between checkboxes */
+  margin-bottom: 1rem; /* space below the row */
+}
+
+.quiz-setting {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem; /* space between checkbox and label text */
+}
+
+.quiz-setting input[type="checkbox"] {
+  transform: scale(1.2);
+  cursor: pointer;
 }

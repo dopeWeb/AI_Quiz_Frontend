@@ -108,6 +108,8 @@
   align-items: center;
   padding: 0.5rem 1rem;
   background-color: #fff;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+
 }
 
 /* Optional: If you want a custom icon next to the username in the dropdown btn */

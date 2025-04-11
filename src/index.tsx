@@ -14,14 +14,10 @@ const root = ReactDOM.createRoot(
 );
 
 root.render(
-  <React.StrictMode>
-    {/* Wrap entire app with GoogleOAuthProvider */}
-    <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID} children={undefined}>
-      <BrowserRouter>
-        <App />
-      </BrowserRouter>
-    </GoogleOAuthProvider>
-  </React.StrictMode>
+  <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
+    <BrowserRouter>
+      <App />
+    </BrowserRouter>
+  </GoogleOAuthProvider>
 );
-
 reportWebVitals();

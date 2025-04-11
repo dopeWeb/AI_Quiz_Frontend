@@ -20,7 +20,7 @@ function getCookie(name: string): string | null {
   return cookieValue;
 }
 interface RegisterProps {
-  setIsAuthenticated?: (auth: boolean) => void;
+  setIsAuthenticated: (auth: boolean) => void;
 }
 
 const Register: React.FC<RegisterProps> = ({ setIsAuthenticated }) => {

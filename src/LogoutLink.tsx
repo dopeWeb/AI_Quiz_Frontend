@@ -4,6 +4,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { googleLogout } from "@react-oauth/google";
 import "./Auth.css";
+import { toast } from "react-toastify";
 
 function getCookie(name: string): string | null {
   let cookieValue: string | null = null;
@@ -51,7 +52,7 @@ const LogoutLink: React.FC<LogoutLinkProps> = ({ setIsAuthenticated, setUsername
       navigate("/login");
     } catch (error: any) {
       console.error("Logout error:", error);
-      alert("Logout failed. Please try again.");
+      toast.error("Logout failed. Please try again.");
     }
   };
 

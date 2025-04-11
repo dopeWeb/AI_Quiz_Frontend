@@ -14,6 +14,9 @@ import SaveQuiz from "./SaveQuiz.tsx";
 import QuizEditor from "./QuizEditor.tsx";
 import QuizTake from "./QuizTake.tsx";
 import LogoutLink from "./LogoutLink.tsx";
+import ForgotPassword from "./ForgotPassword.tsx";
+import ForgotPasswordConfirm from "./ForgotPasswordConfirm.tsx";
+import Footer from "./Footer.tsx";
 
 function getCookie(name: string): string | null {
   let cookieValue: string | null = null;
@@ -38,7 +41,7 @@ function App() {
   const MAX_CHARS = 5000;
   const [showModal, setShowModal] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
-  const [questionType, setQuestionType] = useState("multiple-choice");
+  const [questionType, setQuestionType] = useState<"multiple-choice" | "true-false" | "open-ended" | "mixed">("multiple-choice");
   const [numQuestions, setNumQuestions] = useState("3");
   const [language, setLanguage] = useState("English");
   const [dashboard, setDashboard] = useState(""); // Dashboard name is required
@@ -50,6 +53,8 @@ function App() {
   const [username, setUsername] = useState("");
 
   const countWithoutSpaces = (text: string) => text.replaceAll(" ", "").length;
+
+
 
   // Create a function to check authentication from the backend
   const checkAuth = () => {
@@ -75,7 +80,7 @@ function App() {
   useEffect(() => {
     checkAuth();
   }, []);
-  
+
   // Check authentication on mount via backend account endpoint.
   useEffect(() => {
     axios
@@ -170,7 +175,7 @@ function App() {
           setIsGenerating(false);
           return;
         }
-      } 
+      }
 
       const saveResponse = await axios.post(
         "http://localhost:8000/api/quiz/save/",
@@ -201,11 +206,14 @@ function App() {
     setQuizData(null);
   };
 
+  
+
+
   return (
     <>
       <ToastContainer
         position="top-right"
-        autoClose={5000}
+        autoClose={3000}
         hideProgressBar={false}
         newestOnTop={false}
         closeOnClick
@@ -246,6 +254,7 @@ function App() {
       </nav>
 
       <Routes>
+
         <Route
           path="/"
           element={
@@ -293,7 +302,10 @@ function App() {
                 )}
                 {quizData && !isGenerating && (
                   <div className="quiz-generator-quizdata">
-                    <QuizDisplay quizData={quizData} quizType={questionType} />
+                    <QuizDisplay
+                      quizData={quizData}
+                      quizType={questionType}
+                    />
                     <button onClick={handleReturn} className="quiz-generator-return-btn">
                       Return
                     </button>
@@ -328,7 +340,7 @@ function App() {
                     <select
                       id="quiz-generator-question-type"
                       value={questionType}
-                      onChange={(e) => setQuestionType(e.target.value)}
+                      onChange={(e) => setQuestionType(e.target.value as "multiple-choice" | "true-false" | "open-ended" | "mixed")}
                       className="quiz-generator-dropdown"
                     >
                       <option value="multiple-choice">Multiple Choice</option>
@@ -370,7 +382,7 @@ function App() {
                       <button onClick={handleCancelModal} className="quiz-generator-cancel-btn">
                         Cancel
                       </button>
-                      <button onClick={handleModalGenerate} className="quiz-generator-confirm-btn">
+                      <button onClick={handleModalGenerate }  className="quiz-generator-confirm-btn">
                         Generate
                       </button>
                     </div>
@@ -383,12 +395,18 @@ function App() {
         {/* Auth routes */}
         <Route path="/login" element={<Login setIsAuthenticated={setIsAuthenticated} />} />
         <Route path="/register" element={<Register setIsAuthenticated={setIsAuthenticated} />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route
+          path="/reset-password-confirm/forgot-password/confirm/:uidb64/:token"
+          element={<ForgotPasswordConfirm />}
+        />
         <Route path="/account" element={<Account />} />
         <Route path="/saved-quizzes" element={<SaveQuiz />} />
         <Route path="/quiz-editor/:quizId" element={<QuizEditor />} />
         <Route path="/quiz/take/:quizId" element={<QuizTake />} />
       </Routes>
-    </>
+      {!quizData && <Footer />}
+      </>
   );
 }
 

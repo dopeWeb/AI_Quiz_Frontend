@@ -1,10 +1,9 @@
 /* Main container */
 .container {
   max-width: 800px;
-  margin: 2rem auto;
+  margin: 0rem auto;  /* 2rem on top, 0 on bottom */
   font-family: sans-serif;
   text-align: center;
-  padding: 1rem;
 }
 
 /* Question card styling */
@@ -13,7 +12,10 @@
   border-radius: 12px;
   padding: 2rem;
   margin-bottom: 2rem;
-  background-color: #f9f9f9;
+  background-color: #f9f9f9;    /* If you still want it centered */
+  white-space: normal;        /* allow text to wrap onto new lines */
+  word-wrap: break-word;      /* older property for forcing breaks on long “words” */
+  overflow-wrap: break-word; 
 }
 
 /* Progress Bar */
@@ -94,13 +96,16 @@ h3 {
 /* Input box for open-ended questions */
 .inputBox {
   width: 100%;
-  height: 80px; /* Adjust height */
-  padding: 1rem;
-  border: 1px solid #ddd;
+  min-height: 100px;
+  background-color: #f4f6ff;
+  border: none;
   border-radius: 12px;
+  padding: 1rem;
   font-size: 1rem;
-  background-color: #f1f4ff;
+  color: #333;
   outline: none;
+  resize: vertical;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
   transition: border 0.3s ease;
 }
 
@@ -147,17 +152,58 @@ h3 {
 
 /* Toggle answer button */
 /* Open-ended container */
+
+/* The open-ended question block */
 .openEndedContainer {
+  width: 870px; /* rather than max-width */
+  margin: 2rem auto;  /* Center horizontally, add top/bottom space */
+  background: none;
+  border: none;
+  box-shadow: none;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  margin-top: 1rem;
-  width: 100%;
   text-align: left;
-  padding-left: 50px; /* Reduced padding to move it further left */
-  margin-left: -2rem; /* Added negative margin to shift it left */
 }
 
+
+/* Large question text that can wrap for long strings */
+.openEndedContainer h3,
+.openEndedContainer .questionTitle {
+  font-size: 1.8rem;
+  font-weight: 600;
+  color: #1f2f3d;
+  margin-bottom: 1rem;
+  white-space: normal;
+  overflow-wrap: break-word;
+}
+
+/* Pill-shaped answer box with subtle background */
+.openEndedContainer .inputBox {
+  width: 100%;
+  min-height: 100px;
+  background-color: #f4f6ff; /* Subtle tinted background */
+  border-radius: 12px;
+  border: none;
+  padding: 1rem;
+  font-size: 1rem;
+  color: #333;
+  margin-bottom: 0.5rem; /* Some space before subtext */
+  resize: vertical;
+}
+
+.openEndedContainer .inputBox:focus {
+  border: 2px solid #4e8dff;
+  background-color: #eef4ff;
+}
+
+/* Small note under the answer box */
+.openEndedContainer .subtext {
+  font-size: 0.85rem;
+  color: #8c8c8c;
+  margin-top: 0.25rem; 
+  text-align: left;
+}
 
 .inputBox {
   width: 90%; /* Adjust width to span most of the container */
@@ -210,10 +256,10 @@ h3 {
 
 /* Answer box styling */
 .answerBox {
-  font-size: 1rem;
-  margin-top: 1rem;
-  color: #333;
-  font-style: italic;
+  max-width: 600px;          /* or 80%, or 400px, etc. */
+  white-space: normal;        /* allow text to wrap onto new lines */
+  word-wrap: break-word;      /* older property for forcing breaks on long “words” */
+  overflow-wrap: break-word;
 }
 
 /* Correct and incorrect answers */
@@ -251,7 +297,7 @@ h3 {
 /* Responsive Design */
 @media (max-width: 768px) {
   .container {
-    max-width: 90%;
+    max-width: 100%;
   }
 
   .inputBox {
@@ -293,3 +339,53 @@ h3 {
 }
 
 
+
+/* Container holding all timer elements in one row */
+.timerContainer {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;       /* Space between items (X, time, bar, count) */
+  margin-bottom: 1rem; /* Spacing below the timer before the question card */
+  justify-content: center; /* Center horizontally (optional) */
+}
+
+/* The 'X' to close or dismiss the timer */
+.timerClose {
+  font-size: 1rem;
+  cursor: pointer;
+  color: #333;       /* Adjust color as desired */
+  user-select: none;
+}
+
+/* The textual timer display (e.g., "0:07") */
+.timerDisplay {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #333;
+}
+
+/* Outer bar: gray background, fixed height, rounded corners */
+.timerBar {
+  flex: 1;            /* Let the bar expand to fill space if you want */
+  height: 8px;        /* Same as your screenshot */
+  background-color: #eee; 
+  border-radius: 4px;
+  position: relative;
+  overflow: hidden;    /* Ensures the fill doesn't spill out */
+}
+
+.timerBar {
+  width: 100%;
+  height: 8px;
+  background-color: #eee;
+  border-radius: 4px;
+  overflow: hidden;
+  margin: 0.5rem 0;
+}
+
+.timerFill {
+  height: 100%;
+  background-color: #7367f0;
+  width: 0;  /* This will be dynamically updated */
+  transition: width 0.3s ease;
+}
