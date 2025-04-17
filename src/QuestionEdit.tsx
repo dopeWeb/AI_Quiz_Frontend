@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import "./EditQuiz.css";
+import "./css/EditQuiz.css";
 import axios from "axios";
 import { Draggable } from "@hello-pangea/dnd"; // Import Draggable
 import { toast,  } from "react-toastify";
@@ -372,7 +372,7 @@ const QuestionEdit: React.FC<Props> = ({ question, onDelete, onSave, ordinal, on
                       autoSave(newVal);
                     }}
                     placeholder="Open-ended answer..."
-                    maxLength={600}  // Limit to 500 characters
+                    maxLength={1000}  // Limit to 500 characters
                   />
                 );
               })()}

@@ -1,7 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, } from "react";
 import axios from "axios";
-import styles from "./QuizDisplay.module.css";
-import { useNavigate } from "react-router-dom";
+import styles from "./css/QuizDisplay.module.css";
 import { toast } from "react-toastify";
 
 interface QuizQuestion {
@@ -53,6 +52,9 @@ interface Props {
   userAnswers?: string[];
   setUserAnswers?: (answers: string[]) => void;
   formattedTime?: string;
+  onTimerClose?: () => void;
+  detailedResults?: ScoreDetail[];
+
 
 }
 
@@ -128,12 +130,11 @@ function QuizDisplay({
   finalScore = "",
   globalShowAnswers = true, // Default to false if not provided
   formattedTime,
-
+  detailedResults = [],
 
 
 }: Props) {
 
-  const navigate = useNavigate();
 
 
   let questions: string[] = [];
@@ -155,12 +156,17 @@ function QuizDisplay({
 
   const totalQuestions = questions.length;
 
+
+
   // Use the provided props if available, otherwise fall back to local state.
   const [localUserAnswers, localSetUserAnswers] = useState<string[]>(
     Array(totalQuestions).fill("")
   );
+  
+  // If the parent provided userAnswers/setUserAnswers, use them. Otherwise fallback to local
   const effectiveUserAnswers =
     userAnswers && userAnswers.length > 0 ? userAnswers : localUserAnswers;
+  
   const effectiveSetUserAnswers =
     typeof setUserAnswers === "function" ? setUserAnswers : localSetUserAnswers;
 
@@ -168,12 +174,14 @@ function QuizDisplay({
   const [currentIndex, setCurrentIndex] = useState(0);
   const [locked, setLocked] = useState(false);
   const [LocalfinalScore, setFinalScore] = useState<string | null>(null);
-  const [detailedResults, setDetailedResults] = useState<ScoreDetail[]>([]);
+  const [LoacldetailedResults, setDetailedResults] = useState<ScoreDetail[]>([]);
   const [reviewMode, setReviewMode] = useState(false);
   const [showAnswer, setShowAnswer] = useState<boolean[]>(
     Array(totalQuestions).fill(false)
   );
   const [openEndedFeedback, setOpenEndedFeedback] = useState<ScoreDetail | null>(null);
+
+
 
   const currentAlternatives = getCurrentAlternativesForIndex(
     currentIndex,
@@ -190,35 +198,58 @@ function QuizDisplay({
   // Update selection using the effective props/state
   const handleSelectOption = (val: string) => {
     if (locked) {
-      console.log("[DEBUG] Answer is locked, cannot change selection.");
+      console.log("[DEBUG] Option locked, cannot change.");
       return;
     }
-
-    console.log("[DEBUG] handleSelectOption called with:", val, "at index:", currentIndex);
-    const newAnswers = [...effectiveUserAnswers];
-    newAnswers[currentIndex] = val;
-    effectiveSetUserAnswers(newAnswers);
-    console.log("[DEBUG] New userAnswers:", newAnswers);
+  
+    console.log("[DEBUG] handleSelectOption called with:", val, " for question:", currentIndex);
+  
+    // Update only localUserAnswers (a draft)
+    const newLocal = [...localUserAnswers];
+    newLocal[currentIndex] = val;
+    localSetUserAnswers(newLocal);
+  
+    console.log("[DEBUG] localUserAnswers updated (draft):", newLocal);
   };
-
-
+  
+  /************************************************
+   * 3) handleOpenEndedChange -> only updates localUserAnswers
+   ************************************************/
   const handleOpenEndedChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    if (locked) return;
-    const updated = [...effectiveUserAnswers];
-    updated[currentIndex] = e.target.value;
-    effectiveSetUserAnswers(updated);
-    console.log("[DEBUG] Open-ended change, new answer:", e.target.value, "at index:", currentIndex);
+    if (locked) {
+      console.log("[DEBUG] This answer is locked, ignoring typed input.");
+      return;
+    }
+  
+    console.log("[DEBUG] handleOpenEndedChange, text:", e.target.value, " for Q:", currentIndex);
+  
+    // Update only localUserAnswers (a draft)
+    const newLocal = [...localUserAnswers];
+    newLocal[currentIndex] = e.target.value;
+    localSetUserAnswers(newLocal);
+  
+    console.log("[DEBUG] localUserAnswers updated (draft):", newLocal);
   };
 
   const handleLockAnswer = async () => {
+    console.log("[DEBUG] handleLockAnswer -> copying localAnswers to official userAnswers for Q:", currentIndex);
+  
     setLocked(true);
+  
+    // 1) Copy from localUserAnswers to userAnswers
+    const newAnswers = [...effectiveUserAnswers];
+    newAnswers[currentIndex] = localUserAnswers[currentIndex];
+    effectiveSetUserAnswers(newAnswers);   // official commit
+  
+    console.log("[DEBUG] userAnswers after lock:", newAnswers);
+  
+    // 2) If open-ended, do scoring using newAnswers[currentIndex]
     const effectiveType = getEffectiveType(currentIndex, quizType, quizData);
     if (effectiveType === "open-ended") {
       try {
         const payload = {
-          user_answers: [effectiveUserAnswers[currentIndex]],
+          user_answers: [newAnswers[currentIndex]],
           correct_answers: [answers[currentIndex]],
-          key_concepts: [],
           quiz_type: "open-ended",
           questions: [questions[currentIndex]],
           language: "english",
@@ -234,6 +265,9 @@ function QuizDisplay({
       console.log("[DEBUG] Answer locked for a non-open-ended question.");
     }
   };
+
+
+
 
   const handleNext = () => {
     setLocked(false);
@@ -291,12 +325,10 @@ function QuizDisplay({
       const payload = {
         user_answers: normalizedAnswers,
         correct_answers: answers.map(a => a.trim().toLowerCase()),
-        key_concepts: [],
         quiz_type: quizType,
         questions: questions,
         language: "english",
       };
-
       console.log("[DEBUG] Payload for scoring:", payload);
 
       const response = await axios.post("http://localhost:8000/api/quiz/score", payload);
@@ -328,7 +360,7 @@ function QuizDisplay({
       }
 
       setFinalScore(`Your score is ${response.data.score}/${response.data.total}.`);
-      setDetailedResults(details);
+      setDetailedResults(response.data.details);
       setReviewMode(true);
 
     } catch (err) {
@@ -343,17 +375,16 @@ function QuizDisplay({
     setShowAnswer(updated);
   };
 
-  useEffect(() => {
-    if (forceReview && !reviewMode) {
-      console.log("[DEBUG] forceReview is true and reviewMode is false, calling handleFinish");
-      handleFinish();
-    }
-  }, [forceReview, reviewMode, handleFinish]);
+
+
+
+
 
   if (forceReview || reviewMode) {
     console.log("[DEBUG] In REVIEW MODE. finalScore:", finalScore, "forceReview:", forceReview);
     return (
-      <div className={styles.container}>
+      <div className={styles.reviewContainer}>
+        <h2>{finalScore}</h2>
         <h2>{LocalfinalScore}</h2>
         <p>Review of all questions:</p>
         {questions.map((qText, i) => {
@@ -362,8 +393,13 @@ function QuizDisplay({
           const userAnswer = effectiveUserAnswers[i] || "";
           const displayedUserAnswer = userAnswer.trim() === "" ? "Not answered" : userAnswer;
 
-          // Always pull from final results array
-          const detail = detailedResults.find((d: { question_index: number; }) => d.question_index === i);
+          const detail =
+          detailedResults.find(d => d.question_index === i && d.type === effectiveType) ||
+          LoacldetailedResults.find((d) => d.question_index === i);
+
+          console.log("[DEBUG] detail for question i=", i, detail);
+
+
 
           // For MC or TF, gather alternatives
           let theseAlternatives: string[] = [];
@@ -392,7 +428,7 @@ function QuizDisplay({
           };
 
           return (
-            <div key={i} className={styles.questionCard}>
+            <div key={i} className={styles.questionCardReview}>
               <h3>
                 {i + 1}) {qText}
               </h3>
@@ -434,7 +470,8 @@ function QuizDisplay({
                     <strong>Your Answer:</strong>{" "}
                     {userAnswer.trim() === "" ? "Not answered" : userAnswer}
                   </p>
-                  <p>
+                  <p className={styles.answerBox}>
+
                     <strong>Correct Answer:</strong> {correctAnswer}
                   </p>
 
@@ -509,18 +546,16 @@ function QuizDisplay({
   }
 
 
-  // NORMAL (non-review) RENDER
+  const canLock = (localUserAnswers[currentIndex]?.trim() ?? "") !== "";
   const currentQuestion = questions[currentIndex];
   const currentCorrectAnswer = answers[currentIndex];
-  const userChoice = effectiveUserAnswers[currentIndex] || "";
+  const userChoice = localUserAnswers[currentIndex] || "";
   const effectiveType = getEffectiveType(currentIndex, quizType, quizData);
   const isLastQuestion = currentIndex === totalQuestions - 1;
   const progressPercentage = ((currentIndex + 1) / totalQuestions) * 100;
   const handleTimerClose = () => {
-    navigate("/saved-quizzes");
+    window.location.href = "http://localhost:3000/saved-quizzes";
   };
-
-
 
 
   // Build a "safe" alternatives array
@@ -543,9 +578,9 @@ function QuizDisplay({
 
       <div className={styles.timerContainer}>
         <span className={styles.timerClose} onClick={handleTimerClose}>X</span>
-          <span className={styles.timerDisplay}>{formattedTime}</span>
-        <div className={styles.timerBar}>
-          <div className={styles.timerFill} style={{ width: `${progressPercentage}%` }}></div>
+        <span className={styles.timerDisplay}>{formattedTime}</span>
+        <div className={styles.progressBar}>
+        <div className={styles.timerFill} style={{ width: `${progressPercentage}%` }}></div>
         </div>
         <span className={styles.timerCount}>
           {currentIndex + 1}/{totalQuestions}
@@ -683,7 +718,7 @@ function QuizDisplay({
         !locked ? (
           <button
             onClick={handleLockAnswer}
-            disabled={!effectiveUserAnswers[currentIndex]}
+            disabled={!canLock}
             className={styles.lockButton}
           >
             Lock Answer

@@ -1,10 +1,11 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { useParams, useLocation } from "react-router-dom";
 import axios from "axios";
-import QuizDisplay from "./QuizDisplay.tsx";
-import "./QuizGenerator.css";
-import "./QuizTake.css";
+import QuizDisplay from "./QuizDisplay";
+import "./css/QuizGenerator.css";
+import "./css/QuizTake.css";
 import { toast } from "react-toastify";
+
 
 
 const QuizTake: React.FC = () => {
@@ -24,8 +25,11 @@ const QuizTake: React.FC = () => {
   const [loading, setLoading] = useState(!quizDataFromEditor);
   const [error, setError] = useState("");
 
+
+
+  
   // Timer
-  const initialTimeSeconds = (timeLimitHours * 60 + timeLimitMinutes) * 60;
+  const initialTimeSeconds = timeLimitHours * 3600 + timeLimitMinutes * 60;
   const [timeLeft, setTimeLeft] = useState(initialTimeSeconds);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
@@ -38,34 +42,34 @@ const QuizTake: React.FC = () => {
   const [finalScore, setFinalScore] = useState<number>(0);
   const [finalTotal, setFinalTotal] = useState<number>(0);
 
-  // Track review mode
+  interface ScoreResult {
+    score: number;
+    total: number; // Add the missing 'total' property
+    details: ScoreDetail[];  // includes fields like text_similarity_percentage, etc.
+  }
+
+  interface ScoreDetail {
+    question_index: number;
+    type: string;
+    user_answer: string;
+    correct_answer: string;
+    overall_score?: number;
+    text_similarity_percentage?: number;
+    semantic_similarity_percentage?: number;
+    result: string; 
+  }
+  
+  const [detailedResults, setDetailedResults] = useState<ScoreDetail[]>([]);
   const [showReview, setShowReview] = useState(false);
   const [userAnswers, setUserAnswers] = useState<string[]>([]);
-
-
   const [showAnswers] = useState<boolean>(globalShowAnswersProp);
 
 
 
-  // Define a function to stop the timer and freeze the time display.
   const stopTimer = () => {
     if (timerRef.current) {
       clearInterval(timerRef.current);
-      console.log("[DEBUG] Timer stopped via stopTimer function.");
     }
-  };
-
-  const handleReview = () => {
-    // Check if there are any unanswered questions
-    const unanswered = userAnswers.filter(ans => ans.trim() === "").length;
-    if (unanswered > 0) {
-      const confirmReview = window.confirm(
-        `You have ${unanswered} unanswered question(s). Do you still want to review your answers?`
-      );
-      if (!confirmReview) return;
-    }
-    console.log("[DEBUG] Review button clicked. Forcing review mode regardless of answers.");
-    setShowReview(true);
   };
 
 
@@ -75,17 +79,16 @@ const QuizTake: React.FC = () => {
     }
   }, [quizData]);
 
+
+
   // ─────────────────────────────────────────────────────────────────────────────
   // 1) FETCH QUIZ IF NEEDED
   // ─────────────────────────────────────────────────────────────────────────────
   useEffect(() => {
-    console.log("[DEBUG] useEffect -> Checking if we need to fetch quiz data...");
     if (!quizDataFromEditor && quizId) {
-      console.log(`[DEBUG] No quizDataFromEditor; fetching quiz with ID = ${quizId}...`);
       axios
         .get(`http://localhost:8000/api/quizzes/${quizId}`, { withCredentials: true })
         .then((res) => {
-          console.log("[DEBUG] Fetched quiz data from server:", res.data);
           setQuizData(res.data);
           setLoading(false);
         })
@@ -96,7 +99,6 @@ const QuizTake: React.FC = () => {
         });
     } else {
       if (quizDataFromEditor) {
-        console.log("[DEBUG] We already have quizDataFromEditor, no fetch needed:", quizDataFromEditor);
       }
       setLoading(false);
     }
@@ -107,23 +109,17 @@ const QuizTake: React.FC = () => {
   // ─────────────────────────────────────────────────────────────────────────────
   useEffect(() => {
     if (!quizData) {
-      console.log("[DEBUG] No quizData yet, skipping shuffle...");
       return;
     }
     if (!shuffleQuestions) {
-      console.log("[DEBUG] shuffleQuestions=false, skipping shuffle...");
       return;
     }
     if (hasShuffled) {
-      console.log("[DEBUG] Already shuffled once, skipping shuffle...");
       return;
     }
 
-    console.log("[DEBUG] Shuffling quiz questions...");
-
     const n = quizData.questions.length;
     if (n < 2) {
-      console.log("[DEBUG] Quiz has <2 questions, no need to shuffle.");
       return;
     }
 
@@ -165,12 +161,57 @@ const QuizTake: React.FC = () => {
       display: updatedDisplay,
     };
 
-    console.log("[DEBUG] Quiz data after shuffling:", updatedQuiz);
-
     setQuizData(updatedQuiz);
     setHasShuffled(true);
   }, [shuffleQuestions, quizData, hasShuffled]);
 
+
+  // ─────────────────────────────────────────────────────────────────────────────
+  // HELPER FUNCTION: API SCORING 
+  // ─────────────────────────────────────────────────────────────────────────────
+  const computeScoreWithDebug = useCallback(
+    async (qData: any, userAnswersParam: string[]): Promise<ScoreResult> => {
+      // Build payload for the advanced “open-ended” logic
+      const questionsArray = qData.questions.map((q: any) =>
+        typeof q === "string" ? q : q.text
+      );
+
+      const normalizedAnswers = userAnswersParam.map((a) =>
+        a.trim().toLowerCase()
+      );
+      const correctAnswers = qData.questions.map((q: any) =>
+        (q.correct_answer || "").trim().toLowerCase()
+      );
+
+      const payload = {
+        user_answers: normalizedAnswers,
+        correct_answers: correctAnswers,
+        quiz_type: qData.quizType || "open-ended",
+        questions: questionsArray,
+        language: "english",
+      };
+
+      console.log("[DEBUG] computeScoreWithDebug payload:", payload);
+
+      // Call your advanced API that returns text/semantic similarity for open-ended
+      const response = await axios.post(
+        "http://localhost:8000/api/quiz/score",
+        payload
+      );
+      console.log("[DEBUG] forced path scoring response:", response.data);
+
+      const { score, total, details } = response.data;
+
+      // Validate
+      const finalScore = typeof score === "number" ? score : 0;
+      const finalTotal =
+        typeof total === "number" ? total : qData.questions.length;
+      const finalDetails = Array.isArray(details) ? details : [];
+
+      return { score: finalScore, total: finalTotal, details: finalDetails };
+    },
+    [] // no dependencies needed if function only uses its arguments
+  );
 
   // ─────────────────────────────────────────────────────────────────────────────
   // TIMER EFFECT (With Debug)
@@ -196,109 +237,38 @@ const QuizTake: React.FC = () => {
     timerRef.current = setInterval(() => {
       setTimeLeft((prev) => {
         if (prev <= 1) {
-          console.log("[DEBUG] Time reached 0 or below. Stopping interval and finishing quiz.");
+          console.log("[DEBUG] Time is up -> forced scoring");
           clearInterval(timerRef.current!);
           toast.error("Time is up!");
-
-          // Compute score and force review mode.
+        
           computeScoreWithDebug(quizData, userAnswers)
-            .then((correctCount) => {
-              console.log("[DEBUG] Score computed:", correctCount);
-              setFinalScore(correctCount);
-              setFinalTotal(quizData?.questions?.length || 0);
-              // Force review mode instead of a final score screen.
+            .then(({ score, total, details }) => {
+              console.log("[DEBUG] forced path -> got score:", score, " details:", details);
+              setFinalScore(score);
+              setFinalTotal(total);
+              setDetailedResults(details);
               setQuizComplete(true);
               setShowReview(true);
             })
             .catch((err) => {
-              console.error("[DEBUG] Error computing score:", err);
+              console.error("[DEBUG] Error in forced path scoring:", err);
             });
+        
           return 0;
         }
 
         const newValue = prev - 1;
-        console.log(`[DEBUG] Ticking timeLeft from ${prev} to ${newValue}`);
         return newValue;
       });
     }, 1000);
 
     return () => {
-      console.log("[DEBUG] Cleanup -> clearing interval if it exists.");
       if (timerRef.current) {
         clearInterval(timerRef.current);
-        console.log("[DEBUG] Cleared interval in cleanup.");
       }
     };
-  }, [timeLimit, initialTimeSeconds, quizComplete, quizData, userAnswers]);
+  }, [timeLimit, initialTimeSeconds, quizComplete, quizData, userAnswers, computeScoreWithDebug]);
 
-
-
-
-
-  // ─────────────────────────────────────────────────────────────────────────────
-  // HELPER FUNCTION: API SCORING (Optional Alternative)
-  // ─────────────────────────────────────────────────────────────────────────────
-  // If you want to use the API endpoint for scoring instead of local computeScoreWithDebug:
-  const computeScoreWithDebug = async (
-    qData: any,
-    userAnswersParam: string[]
-  ): Promise<number> => {
-    console.log("[DEBUG] computeScoreWithAPI() -> Scoring quiz via API...");
-    if (!qData || !qData.questions) {
-      console.log("[DEBUG] computeScoreWithAPI() -> No quiz questions; score=0");
-      return 0;
-    }
-
-    // Use the provided userAnswers if they exist and are non-empty;
-    // otherwise, fall back to using qData.questions[i].answer.
-    const effectiveUserAnswers =
-      userAnswersParam && userAnswersParam.some(ans => ans.trim() !== "")
-        ? userAnswersParam
-        : qData.questions.map((q: any) => q.answer || "");
-
-    // Normalize the user answers:
-    const normalizedAnswers = effectiveUserAnswers.map((ans: string) =>
-      ans ? ans.trim().toLowerCase() : ""
-    );
-
-    // Normalize the correct answers:
-    const correctAnswers = qData.questions.map((q: any) =>
-      q.correct_answer ? q.correct_answer.trim().toLowerCase() : ""
-    );
-
-    console.log("[DEBUG] Normalized Answers:", normalizedAnswers);
-    console.log("[DEBUG] Correct Answers:", correctAnswers);
-
-    // Build an array of question texts (handling both string and object cases)
-    const questionsArray = qData.questions.map((q: any) =>
-      typeof q === "string" ? q : q.text
-    );
-
-    const payload = {
-      user_answers: normalizedAnswers,
-      correct_answers: correctAnswers,
-      key_concepts: [],
-      quiz_type: qData.quizType || "open-ended",
-      questions: questionsArray,
-      language: "english",
-    };
-
-    console.log("[DEBUG] Payload for scoring:", payload);
-
-    try {
-      const response = await axios.post("http://localhost:8000/api/quiz/score", payload);
-      console.log("[DEBUG] API scoring response:", response.data);
-      const score = response.data.score;
-      if (typeof score !== "number") {
-        console.warn("[DEBUG] Received score is not a number, defaulting to 0");
-        return 0;
-      }
-      return score;
-    } catch (err) {
-      console.error("[DEBUG] Error scoring quiz via API:", err);
-      return 0;
-    }
-  };
 
 
 
@@ -306,37 +276,7 @@ const QuizTake: React.FC = () => {
   // ─────────────────────────────────────────────────────────────────────────────
   // QUIZ COMPLETE LOGIC
   // ─────────────────────────────────────────────────────────────────────────────
-  const handleQuizComplete = (score: number, total: number) => {
-    console.log(`[DEBUG] handleQuizComplete() -> score=${score}, total=${total}`);
-    setFinalScore(score);
-    setFinalTotal(total);
-    setQuizComplete(true);
-  };
 
-  // If quiz is complete and we are not reviewing, show final screen.
-  if (quizComplete && !showReview) {
-    const percentage = finalTotal > 0 ? Math.round((finalScore / finalTotal) * 100) : 0;
-    console.log("[DEBUG] Rendering quiz-complete screen. Final score:", finalScore, "/", finalTotal);
-    return (
-      <div className="quiz-complete-container">
-        <div className="quiz-complete-icon">
-          <div style={{ fontSize: "48px", color: "green" }}>✓</div>
-        </div>
-        <h2>Quiz Complete</h2>
-        <p>
-          Your final score is {finalScore}/{finalTotal} ({percentage}%)
-        </p>
-        <div className="quiz-complete-buttons">
-          <button onClick={handleReview}>
-            Review
-          </button>
-          <button onClick={() => window.location.reload()}>
-            Restart
-          </button>
-        </div>
-      </div>
-    );
-  }
 
   const transformedQuizData = {
     ...quizData,
@@ -344,6 +284,7 @@ const QuizTake: React.FC = () => {
   };
 
   const quizType = quizData.quiz_type || "open-ended";
+
 
   // If in review mode, show the QuizDisplay in review view.
   if (showReview) {
@@ -355,33 +296,15 @@ const QuizTake: React.FC = () => {
         forceReview={true} // forces review mode
         userAnswers={userAnswers}
         setUserAnswers={setUserAnswers}
-        finalScore={`Your score is ${finalScore}`} // <-- Here!
-        formattedTime={""}      />
+        finalScore={`Your score is ${finalScore}/${finalTotal}.`} // Passing string
+        detailedResults={detailedResults}  // <--- pass the parent's state
+        formattedTime={""} />
     );
   }
 
   // ─────────────────────────────────────────────────────────────────────────────
   // NORMAL QUIZ RENDER
   // ─────────────────────────────────────────────────────────────────────────────
-
-
-  // This function stops the timer and then calls handleFinishManually
-  const finishQuizAndStopTimer = async () => {
-    console.log("[DEBUG] Finish Quiz button clicked. Manually scoring now...");
-    if (!quizData || !quizData.questions) {
-      console.log("[DEBUG] quizData or quizData.questions missing. Score=0.");
-      handleQuizComplete(0, 0);
-      return;
-    }
-
-    stopTimer();
-    console.log("[DEBUG] Timer manually cleared in finishQuizAndStopTimer.");
-
-    const correctCount = await computeScoreWithDebug(quizData, userAnswers);
-    handleQuizComplete(correctCount, quizData.questions.length);
-  };
- 
-
 
 
   if (loading) {
@@ -394,37 +317,37 @@ const QuizTake: React.FC = () => {
     return <div>No quiz data available.</div>;
   }
 
-  console.log("[DEBUG] About to render QuizDisplay with quizData:", quizData);
-
   return (
     <div className="quiz-take-container">
-    
 
-  
+
+
       <QuizDisplay
         quizData={transformedQuizData}
         quizType={quizType}
         globalShowAnswers={showAnswers}
         userAnswers={userAnswers}
         setUserAnswers={setUserAnswers}
-        onQuizComplete={(score: number, total: number) => {
-          console.log(`[DEBUG] onQuizComplete callback from QuizDisplay -> score=${score}, total=${total}`);
+        onQuizComplete={() => {
           stopTimer();
-          handleQuizComplete(score, total);
         }}
         stopTimer={stopTimer}
-        formattedTime={initialTimeSeconds > 0 
-        ? `${Math.floor(timeLeft / 60)}:${String(timeLeft % 60).padStart(2, "0")}`
-        : ""}
+        formattedTime={
+          timeLimit
+            ? (() => {
+                const h = Math.floor(timeLeft / 3600);
+                const m = Math.floor((timeLeft % 3600) / 60)
+                  .toString()
+                  .padStart(2, "0");
+                const s = (timeLeft % 60).toString().padStart(2, "0");
+                return h > 0 ? `${h}:${m}:${s}` : `${m}:${s}`;
+              })()
+            : ""
+        }
+
       />
-  
-      <div className="quiz-take-footer">
-        <div className="left-buttons">
-          <button onClick={finishQuizAndStopTimer} className="quiz-take-btn finish-btn">
-            Finish Quiz
-          </button>
-        </div>
-      </div>
+
+
     </div>
   );
 };

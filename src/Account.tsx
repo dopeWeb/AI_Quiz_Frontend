@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import "./Account.css"; // Ensure your dropdown/account styles are defined here
+import "./css/Account.css";
 
 interface Quiz {
   quiz_id: number;

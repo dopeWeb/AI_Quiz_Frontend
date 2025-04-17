@@ -115,7 +115,7 @@
 /* Optional: If you want a custom icon next to the username in the dropdown btn */
 /* The user icon (circle avatar) inside the button */
 .user-icon {
-  background: url("img/person-icon.svg") no-repeat center center / cover;
+  background: url("D:\JohnBryce\ProjecFrontend_Finall\my-app\src\img\person-icon.svg") no-repeat center center / cover;
   width: 24px;
   height: 24px;
 }

@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
-import "./Auth.css";
+import "./css/Auth.css";
+import zxcvbn from "zxcvbn";
 
 
 const ForgotPasswordConfirm: React.FC = () => {
@@ -20,12 +21,25 @@ const ForgotPasswordConfirm: React.FC = () => {
     e.preventDefault();
     setError("");
     setSuccess("");
-
+  
+    // Check if newPassword matches confirmPassword.
     if (newPassword !== confirmPassword) {
       setError("Passwords do not match.");
       return;
     }
-
+  
+    // Validate password strength.
+    const pwdResult = zxcvbn(newPassword);
+    const strengthScore = newPassword ? pwdResult.score : 0;
+  
+    // If the password is "Very Weak" (score 0) or "Weak" (score 1), show an error.
+    if (strengthScore < 2) {
+      setError(
+        "Password is too weak. It should be at least 8 characters long and include an uppercase letter, a lowercase letter, a number, and a special character."
+      );
+      return;
+    }
+  
     try {
       const response = await axios.post(
         `http://localhost:8000/api/auth/password-reset-confirm/`,
@@ -40,7 +54,6 @@ const ForgotPasswordConfirm: React.FC = () => {
       }, 2000);
     } catch (error: any) {
       console.error("Error resetting password:", error);
-      // Check for token-related errors and show an appropriate message.
       if (error.response && error.response.data && error.response.data.error) {
         setError(error.response.data.error);
       } else {
@@ -48,6 +61,37 @@ const ForgotPasswordConfirm: React.FC = () => {
       }
     }
   };
+
+
+    const pwdResult = zxcvbn(newPassword);
+    const strengthScore = newPassword ? pwdResult.score : 0;
+    let strengthLabel = "";
+    let strengthColor = "#ccc";
+  
+    switch (strengthScore) {
+      case 0:
+        strengthLabel = "Very Weak";
+        strengthColor = "#ff0000";
+        break;
+      case 1:
+        strengthLabel = "Weak";
+        strengthColor = "#ff4000";
+        break;
+      case 2:
+        strengthLabel = "Fair";
+        strengthColor = "#ff8000";
+        break;
+      case 3:
+        strengthLabel = "Strong";
+        strengthColor = "#00c853";
+        break;
+      case 4:
+        strengthLabel = "Very Strong";
+        strengthColor = "#008000";
+        break;
+      default:
+        break;
+    }
 
   return (
     <div className="reset-password-container" style={{ margin: "2rem" }}>
@@ -76,6 +120,27 @@ const ForgotPasswordConfirm: React.FC = () => {
               required
             />
           </div>
+
+          {newPassword && (
+          <div style={{ marginTop: "8px", minHeight: "60px", width: "100%" }}>
+            <div style={{ display: "flex", gap: "4px" }}>
+              {[0, 1, 2, 3].map((i) => (
+                <div
+                  key={i}
+                  style={{
+                    flex: 1,
+                    height: "10px",
+                    backgroundColor: i < strengthScore ? strengthColor : "#e0e0e0",
+                    borderRadius: "5px",
+                  }}
+                />
+              ))}
+            </div>
+            <div style={{ marginTop: "8px" }}>
+              <small>Password Strength: {strengthLabel}</small>
+            </div>
+          </div>
+        )}
           {/* Hidden inputs to pass uidb64 and token */}
           <input type="hidden" name="uidb64" value={uidb64 || ""} />
           <input type="hidden" name="token" value={token || ""} />

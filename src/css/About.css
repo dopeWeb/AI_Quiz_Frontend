@@ -1,0 +1,118 @@
+/* Wrap everything on the page */
+.home-container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+    box-sizing: border-box;
+    position: relative;
+    top: -130px; /* Moves the container up by 20px */
+  }
+  
+  /* Hero / Top Section */
+  .hero-section {
+    text-align: center;
+    margin-bottom: 3rem;
+  }
+  
+  .hero-title,
+  .hero-title1 {
+    display: inline;
+    margin: 0; /* Remove default margins, adjust if you need spacing */
+
+  }
+  
+  /* If you want a little space between the two headings */
+  .hero-title {
+    margin-right: 0.5rem;
+  }
+  
+  .hero-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    /* Remove margin-bottom to avoid extra spacing */
+  }
+  .hero-title1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #1b63ff; /* Bootstrap primary color */
+  }
+  
+  .hero-description {
+    font-size: 1rem;
+    max-width: 600px;
+    margin: 0 auto;
+    line-height: 1.5;
+    color: #555;
+  }
+  
+  /* Card Layout Section */
+  .features-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 3rem;
+  }
+  
+  .cards-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 2rem;
+    width: 100%;
+    max-width: 1000px;
+  }
+  
+  .feature-card {
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease-in-out;
+    padding: 2rem;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+  }
+  
+  .feature-card:hover {
+    transform: translateY(-5px);
+  }
+  
+
+  
+  .feature-card-title {
+    font-size: 1.2rem;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+  }
+  
+  .feature-card-text {
+    font-size: 0.95rem;
+    color: #555;
+    line-height: 1.4;
+  }
+  
+  /* Key Features Section */
+  .key-features-section {
+    max-width: 800px;
+    margin: 0 auto;
+  }
+  
+  .key-features-title {
+    font-size: 1.8rem;
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 1rem;
+  }
+  
+  .key-features-list {
+    list-style-type: disc;
+    margin-left: 1.5rem;
+    line-height: 1.6;
+    color: #555;
+  }
+  
+  .key-features-list li {
+    margin-bottom: 0.5rem;
+  }
+  

@@ -10,7 +10,6 @@
 .quiz-generator-title {
   margin-bottom: 1.5rem;
 }
-
 /* Label */
 .quiz-generator-label {
   font-weight: bold;
@@ -50,9 +49,8 @@
   margin-top: 0.5rem;
 }
 
-/* Generate (Next) button */
 .quiz-generator-generate-btn {
-  margin-top: 1rem;
+  margin-top: 0,6rem;
   cursor: pointer;
   
   /* Rounded look, white background, blue border to match “Next” style */
@@ -78,30 +76,44 @@
 }
 
 .quiz-generator-return-btn {
-  background-color: #6c757d; /* Gray background */
-  color: #fff; /* White text */
-  border: none; /* Remove border */
-  border-radius: 12px; /* Rounded corners */
-  padding: 1rem 2rem; /* Increase padding for a larger button */
-  font-size: 1.2rem; /* Larger font size */
-  cursor: pointer; /* Pointer cursor on hover */
-  margin-top: 1.5rem; /* Add some spacing from the top */
-  text-align: center; /* Center the text */
-  transition: background-color 0.3s ease, transform 0.2s ease; /* Smooth hover effect */
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;                  /* space between icon & text */
+  background-color: #6c757d;    /* Gray background */
+  color: #fff;                  /* White text */
+  border: none;
+  border-radius: 9999px;        /* full pill */
+  padding: 0.75rem 1.5rem;      /* tighter vertical, generous horizontal */
+  font-size: 1rem;
+  font-weight: 500;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  cursor: pointer;
+  transition:
+    background-color 0.2s ease,
+    transform 0.1s ease,
+    box-shadow 0.2s ease;
 }
 
-/* Hover effect */
+/* If you want an arrow icon before the text */
+.quiz-generator-return-btn::before {
+  content: "←";
+  font-size: 1.1rem;
+  line-height: 1;
+}
+
+/* Hover state */
 .quiz-generator-return-btn:hover {
-  background-color: #5a6268; /* Darker gray on hover */
-  transform: scale(1.1); /* Slightly enlarge the button */
+  background-color: #5a6268;
+  box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+  transform: translateY(-1px);
 }
 
-/* Active (click) effect */
+/* Active/click state */
 .quiz-generator-return-btn:active {
-  background-color: #4e555b; /* Even darker gray on click */
-  transform: scale(0.95); /* Slightly shrink the button */
+  background-color: #4e555b;
+  box-shadow: 0 3px 6px rgba(0,0,0,0.2);
+  transform: translateY(1px);
 }
-
 
 
 /* Modal backdrop */
@@ -123,7 +135,7 @@
   background: #fff;
   border-radius: 8px;
   padding: 2rem 3rem; /* Increased padding for better spacing */
-  min-width: 800px; /* Increased width */
+  min-width: 40%; /* Increased width */
   min-height: 500px; /* Added height to make it larger */
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
   display: flex;

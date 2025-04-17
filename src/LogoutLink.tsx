@@ -3,7 +3,7 @@ import React from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { googleLogout } from "@react-oauth/google";
-import "./Auth.css";
+import "./css/Auth.css";
 import { toast } from "react-toastify";
 
 function getCookie(name: string): string | null {
@@ -57,7 +57,7 @@ const LogoutLink: React.FC<LogoutLinkProps> = ({ setIsAuthenticated, setUsername
   };
 
   return (
-    <a href="#" className="account-link" onClick={handleLogout}>
+    <a href="/" className="account-link" onClick={handleLogout}>
       Logout
     </a>
   );

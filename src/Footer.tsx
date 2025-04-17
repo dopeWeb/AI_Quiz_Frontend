@@ -1,6 +1,6 @@
 import React from 'react';
 import { useLocation } from 'react-router-dom';
-import './Footer.css'; // Make sure to import your CSS
+import './css/Footer.css'; // Make sure to import your CSS
 import myImage from './img/2017050.jpg';
 
 const Footer: React.FC = () => {

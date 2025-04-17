@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
-import QuestionEdit from "./QuestionEdit.tsx";
-import "./EditQuiz.css";
+import QuestionEdit from "./QuestionEdit";
+import "./css/EditQuiz.css";
 import { DragDropContext, Droppable, DropResult } from "@hello-pangea/dnd";
-import { toast, ToastContainer,  } from "react-toastify";
+import { toast, ToastContainer, } from "react-toastify";
 
 
 interface QuizDisplayData {
@@ -32,7 +32,6 @@ interface Quiz {
   quizType: "multiple-choice" | "true-false" | "open-ended" | "mixed";
   quiz_id: number;
   title: string;
-  language: string;
   created_at: string;
   questions: Question[];
   display: QuizDisplayData;
@@ -50,8 +49,8 @@ const QuizEditor: React.FC = () => {
   const [showAnswers, setShowAnswers] = useState(true);
   const [shuffleQuestions, setShuffleQuestions] = useState(false);
   const [timeLimit, setTimeLimit] = useState(false);
-  const [timeLimitHours, setTimeLimitHours] = useState<number>(0);
-  const [timeLimitMinutes, setTimeLimitMinutes] = useState<number>(0);
+  const [timeLimitHours, setTimeLimitHours] = useState<string>("")
+  const [timeLimitMinutes, setTimeLimitMinutes] = useState<string>("")
 
   const [isDirty, setIsDirty] = useState(false);
 
@@ -183,10 +182,10 @@ const QuizEditor: React.FC = () => {
         }
       );
       console.log("Bulk update response:", response.data);
-     toast.success("All questions saved successfully." ,{ containerId: "local" });
+      toast.success("All questions saved successfully.", { containerId: "local" });
     } catch (error) {
       console.error("Error in bulk saving questions:", error);
-      toast.error("Error saving all questions. Please try again.",{ containerId: "local" });
+      toast.error("Error saving all questions. Please try again.", { containerId: "local" });
     }
   };
 
@@ -267,12 +266,24 @@ const QuizEditor: React.FC = () => {
 
   const handleStartQuiz = async (quizId: number) => {
     if (!quiz) return;
-
-    if (isDirty) {
-      toast.error("You have unsaved changes. Please click 'Save All' before starting the quiz.",{ containerId: "local" });
+  
+    // 1) No questions? bail out with an alert
+    if (!quiz.questions || quiz.questions.length === 0) {
+      toast.error("Cannot start the quiz because there are no questions.");
       return;
     }
-    // Optionally re-fetch the quiz data from the backend.
+  
+    // 2) Unsaved changes?
+    if (isDirty) {
+      toast.error(
+        "You have unsaved changes. Please click 'Save All' before starting the quiz.",
+        { containerId: "local" }
+      );
+      return;
+    }
+  
+    toast.success("Starting quiz...", { containerId: "local" });
+    // 3) (Re‑)fetch and navigate
     const updatedQuiz = await fetchQuizData();
     navigate(`/quiz/take/${quizId}`, {
       state: {
@@ -331,7 +342,7 @@ const QuizEditor: React.FC = () => {
         console.error("[DEBUG] Error response data:", error.response.data);
         console.error("[DEBUG] Error response status:", error.response.status);
       }
-      toast.error("Error updating question order. Please try again.",{ containerId: "local" });
+      toast.error("Error updating question order. Please try again.", { containerId: "local" });
     }
   };
 
@@ -460,42 +471,53 @@ const QuizEditor: React.FC = () => {
             <input
               type="checkbox"
               checked={timeLimit}
-              onChange={(e) => setTimeLimit(e.target.checked)} />
+              onChange={e => setTimeLimit(e.target.checked)}
+            />
             Time Limit
           </label>
 
-          {(timeLimit || timeLimitHours > 0 || timeLimitMinutes > 0) && (
+          {(timeLimit || timeLimitHours || timeLimitMinutes) && (
             <div className="time-limit-inputs">
               <label>
                 Hours:
                 <input
-                  type="number"
+                  type="text"
+                  placeholder="Hours"
+                  inputMode="numeric"
+                  pattern="\d*"
+                  maxLength={4}
                   value={timeLimitHours}
-                  onChange={(e) => {
-                    const hours = Number(e.target.value);
-                    setTimeLimitHours(hours);
-                    if (hours > 0 || timeLimitMinutes > 0) {
+                  onChange={e => {
+                    const v = e.target.value.replace(/\D/g, "").slice(0, 4);
+                    setTimeLimitHours(v);
+                    if (v !== "" || timeLimitMinutes !== "") {
                       setTimeLimit(true);
                     }
-                  } }
-                  min={0} />
+                  }}
+                />
               </label>
               <label>
                 Minutes:
                 <input
-                  type="number"
+                  type="text"
+                  placeholder="Minutes"
+                  inputMode="numeric"
+                  pattern="\d*"
+                  maxLength={4}
                   value={timeLimitMinutes}
-                  onChange={(e) => {
-                    const minutes = Number(e.target.value);
-                    setTimeLimitMinutes(minutes);
-                    if (minutes > 0 || timeLimitHours > 0) {
+                  onChange={e => {
+                    const v = e.target.value.replace(/\D/g, "").slice(0, 4);
+                    setTimeLimitMinutes(v);
+                    if (v !== "" || timeLimitHours !== "") {
                       setTimeLimit(true);
                     }
-                  } }
-                  min={0}
-                  max={59} />
+                  }}
+                  min="0"
+                  max="59"
+                />
               </label>
             </div>
+
           )}
 
 

@@ -1,0 +1,403 @@
+/* -------------------------------------------------
+   Overall Container
+-------------------------------------------------- */
+.container {
+  max-width: 900px;
+  margin: 2rem auto;    /* center horizontally, space at top/bottom */
+  font-family: sans-serif;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  padding: 2rem;
+  text-align: left;     /* left-align contents by default */
+}
+
+/* -------------------------------------------------
+   Timer / Progress Bar Container
+-------------------------------------------------- */
+/* Timer/Progress Bar Container */
+.timerContainer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+  padding: 0 1rem; /* Adds horizontal spacing */
+  /* Optional: a subtle background or border for the timer row */
+  /* background-color: #f8f8f8; */
+  /* border-radius: 6px; */
+}
+
+/* Close (X) Button */
+.timerClose {
+  font-size: 1.2rem;    /* Slightly larger icon */
+  cursor: pointer;
+  color: #333;
+  user-select: none;
+  padding: 0.2rem 0.5rem;
+  transition: transform 0.2s ease;
+}
+
+.timerClose:hover {
+  transform: scale(1.1);
+}
+
+/* Formatted Time Display (e.g., "0:07") */
+.timerDisplay {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #333;
+}
+
+/* Progress Bar Container */
+.progressBar {
+  flex: 1;                /* Takes up available horizontal space */
+  height: 10px;           /* Slightly thicker than 8px */
+  background-color: #eaeaea;
+  border-radius: 5px;
+  margin: 0 1rem;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Progress Bar Fill (purple fill, animates width) */
+.timerFill, /* Alternative selector if used in your JS as .timerFill */
+.progressFill {
+  height: 100%;
+  width: 0%;             /* Will be dynamically updated */
+  background-color: #7367f0;  /* Purple color as seen in your images */
+  border-radius: 5px;
+  transition: width 0.4s ease;
+}
+
+/* Question Counter (e.g., "3/8") */
+.timerCount {
+  font-size: 1rem;
+  color: #333;
+  user-select: none;
+}
+
+
+/* -------------------------------------------------
+   Question Header
+-------------------------------------------------- */
+.questionHeader {
+  margin-bottom: 1rem;
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #333;
+  line-height: 1.4;
+}
+
+/* -------------------------------------------------
+   Open-Ended Question Styles
+-------------------------------------------------- */
+.openEndedContainer {
+  margin-bottom: 2rem;
+  padding: 1rem;
+  max-width: 100%;
+}
+
+
+/* The question text for open-ended */
+.openEndedContainer h3 {
+  font-size: 1.6rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  color: #333; /* adjust if you want a bluish color, e.g. #394073 */
+  line-height: 1.4;
+}
+
+/* Tinted textarea for user's open-ended answer */
+.textareaBox {
+  width: 100%;
+  min-height: 120px;       /* taller by default */
+  background-color: #f4f6ff;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  padding: 1rem;
+  font-size: 1rem;
+  color: #333;
+  outline: none;
+  resize: vertical;        /* allow user to vertically resize if needed */
+  box-shadow: inset 0 1px 3px rgba(0,0,0,0.05);
+  transition: border 0.3s ease;
+  margin-bottom: 0.5rem;   /* some space before .subtext or other elements */
+}
+
+.inputBox::placeholder {
+  color: #aaa;     /* lighter placeholder text */
+  font-style: italic;
+}
+
+.inputBox:focus {
+  border-color: #4e8dff;
+  background-color: #eef4ff;
+}
+
+/* Optional subtext under the input, e.g. "Your answer is assessed by key concepts..." */
+.subtext {
+  font-size: 0.85rem;
+  color: #8c8c8c;
+  margin-top: 0.25rem;
+}
+
+/* Toggle button for "Hide/Show Answer" (optional) */
+.toggleButton {
+  background-color: transparent;
+  color: #4e8dff;
+  border: 2px solid #4e8dff;
+  border-radius: 24px;
+  padding: 0.5rem 1.5rem;
+  font-size: 1rem;
+  cursor: pointer;
+  margin-bottom: 1rem;
+  transition: background-color 0.3s ease;
+  outline: none;
+}
+
+.toggleButton:hover {
+  background-color: #eef4ff;
+}
+
+/* Correct/hidden answer feedback for open-ended */
+.correctAnswer {
+  margin-top: 0.75rem;
+  font-size: 0.95rem;
+  color: #333;
+}
+
+/* -------------------------------------------------
+   Multiple-Choice / True-False Option Styles
+-------------------------------------------------- */
+.optionContainer {
+  margin-bottom: 2rem;
+}
+
+.optionContainer h3 {
+  font-size: 1.6rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+  color: #333;
+}
+
+/* Pill-shaped MC/TF options */
+.optionBase {
+  display: flex;
+  align-items: center;
+  border-radius: 50px; /* pill shape */
+  padding: 0.8rem 1rem;
+  margin-bottom: 1rem;
+  cursor: pointer;
+  border: 1px solid #ddd;
+  background-color: #f4f6ff;
+  transition: background-color 0.2s ease;
+}
+
+.optionBase:hover {
+  background-color: #eef4ff;
+}
+
+/* If you want a letter bubble, e.g. A/B/C/D */
+.letterBox {
+  width: 36px;
+  height: 36px;
+  font-weight: bold;
+  border-radius: 50%;
+  background-color: #eaeaea;
+  color: #333;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 0.75rem;
+}
+
+/* Highlight states after user selection or final result */
+.selectedOption {
+  background-color: #eaf1fe;
+  border-color: #b2cff8;
+}
+.correctOption {
+  background-color: #d4edda;
+  border-color: #c3e6cb;
+}
+.incorrectOption {
+  background-color: #f8d7da;
+  border-color: #f5c6cb;
+}
+.partialOption {
+  background-color: #fffbcc;
+  border-color: #fffbcc;
+}
+
+/* -------------------------------------------------
+   Buttons: Lock, Next, Finish
+-------------------------------------------------- */
+.lockButton,
+.nextButton {
+  background-color: #4e8dff;
+  color: #fff;
+  border: none;
+  border-radius: 24px;
+  padding: 0.6rem 1.5rem;
+  font-size: 1rem;
+  cursor: pointer;
+  margin-top: 1.5rem;
+  transition: background-color 0.3s ease;
+  outline: none;
+}
+
+
+
+/* Position the finishButton at the top-right */
+.finishButton {
+  background-color: #4e8dff;
+  color: #fff;
+  border: none;
+  border-radius: 24px;
+  padding: 0.6rem 1.5rem;
+  font-size: 1rem;
+  cursor: pointer;
+  margin-top: 1.5rem;
+  transition: background-color 0.3s ease;
+  outline: none;
+}
+
+.finishButton:hover {
+  background-color: #3b75e0;
+}
+
+.lockButton:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.lockButton:hover,
+.nextButton:hover{
+  background-color: #3b75e0;
+}
+
+
+/* -------------------------------------------------
+   Additional Utility Classes
+-------------------------------------------------- */
+.buttonContainer {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.answerBox {
+  margin-top: 0.5rem;
+  color: #555;
+  font-size: 0.95rem;
+  white-space: normal;
+  overflow-wrap: break-word;
+}
+
+
+/* Container for the entire review section */
+.reviewContainer {
+  max-width: 700px;
+  margin: 2rem auto;
+  background-color: #fff;
+  padding: 1rem 2rem;
+  border-radius: 8px;
+  line-height: 1.5;
+}
+
+/* Heading for the overall score (LocalfinalScore) */
+.reviewContainer h2 {
+  display: block !important;
+  color: #333 !important;
+  font-size: 1.8rem !important;
+}
+
+/* Subheading for "Review of all questions:" */
+.reviewContainer p {
+  font-size: 1rem;
+  color: #555;
+  margin-bottom: 1.5rem;
+}
+
+
+
+
+/* Each question block */
+.questionCardReview {
+  background-color: #fff;        /* White background for clarity */
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+  position: relative;   
+  margin-top: 0.5rem;
+  color: #555;
+  font-size: 0.95rem;
+  white-space: normal;
+  overflow-wrap: break-word;         /* if you want to position "Incorrect" or "Correct" label inside */
+}
+
+/* The question text */
+.questionCardReview h3 {
+  font-size: 1rem;
+  font-weight: bold;
+  margin-bottom: 0.75rem;
+  color: #333;
+  margin-top: 0.5rem;
+  color: #555;
+  font-size: 0.95rem;
+  white-space: normal;
+  overflow-wrap: break-word;
+}
+
+/* If you want each question block to highlight pink/green when incorrect/correct:
+   either conditionally add classes (like .incorrectBlock, .correctBlock) in your JSX 
+   or just rely on .incorrectOption for the final text. 
+*/
+
+/* The user’s and correct answers, MC options, etc. */
+.questionCardReview p {
+  margin: 0.4rem 0; /* Slight vertical spacing between lines */
+  color: #333;
+}
+
+
+/* -------------------------------------------------
+   Responsive
+-------------------------------------------------- */
+@media (max-width: 768px) {
+  .container {
+    margin: 1rem;
+    padding: 1rem;
+  }
+  
+  .timerContainer {
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .progressBar {
+    margin: 0;
+  }
+
+  .questionHeader,
+  .optionContainer h3,
+  .openEndedContainer h3 {
+    font-size: 1.3rem;
+  }
+
+  .toggleButton,
+  .lockButton,
+  .nextButton,
+  .finishButton {
+    font-size: 0.9rem;
+    padding: 0.5rem 1rem;
+  }
+
+  .letterBox {
+    width: 32px;
+    height: 32px;
+    margin-right: 0.5rem;
+  }
+}

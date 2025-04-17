@@ -24,9 +24,8 @@
 **********************************/
 .quiz-buttons {
   display: flex;
-  gap: 1rem; /* Spacing between buttons */
-  margin-top: 7rem;           /* Increase to push buttons lower */
-
+  gap: 1rem;           /* Spacing between buttons */
+  margin-top: 7rem;    /* Increase to push buttons lower */
 }
 
 .quiz-btn {
@@ -39,6 +38,7 @@
   cursor: pointer;
   transition: background-color 0.2s ease, color 0.2s ease;
 }
+
 
 .quiz-btn:hover {
   background-color: #7367f0;
@@ -261,4 +261,123 @@
 .quiz-setting input[type="checkbox"] {
   transform: scale(1.2);
   cursor: pointer;
+}
+
+
+
+.time-limit-inputs {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* your “pill” style for desktop */
+.time-limit-inputs input[type="text"] {
+  padding: 0.5rem 1rem;
+  background-color: #eef0fc;
+  border: none;
+  border-radius: 9999px;
+  width: 7ch;
+  font-size: 0.9rem;
+  text-align: center;
+  color: #333;
+}
+
+.time-limit-inputs input[type="text"]::placeholder {
+  color: #777;
+}
+
+/* remove spinner arrows (just in case) */
+.time-limit-inputs input[type="text"]::-webkit-inner-spin-button,
+.time-limit-inputs input[type="text"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+.time-limit-inputs input[type="text"] {
+  -moz-appearance: textfield;
+}
+
+/* ————————————————————————————————
+   Mobile tweaks
+   ———————————————————————————————— */
+@media (max-width: 600px) {
+  .time-limit-inputs {
+    /* stack labels & inputs vertically */
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1rem;
+  }
+  .time-limit-inputs label {
+    /* make the whole label (text + input) full width */
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+  }
+  .time-limit-inputs input[type="text"] {
+    /* stretch pills to fill parent */
+    width: 100%;
+    box-sizing: border-box;
+  }
+}
+
+@media (max-width: 600px) {
+  .quiz-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;            /* space between pills */
+    margin: 2rem 1rem 0;   /* push them down, and add side padding */
+    padding: 0;            
+  }
+
+  .quiz-btn {
+    /* make each pill fill its container */
+    display: block;
+    width: 100%;
+    
+    /* nice tall touch target */
+    padding: 0.75rem 1rem;
+    
+    /* perfect pill corners */
+    border-radius: 9999px;
+    
+    /* center the text */
+    text-align: center;
+    
+    /* ensure border‑box sizing */
+    box-sizing: border-box;
+    
+    /* bump font slightly for readability */
+    font-size: 1rem;
+  }
+}
+@media (max-width: 600px) {
+  .quiz-header-row {
+    display: flex;               /* enable flex layout */
+    flex-direction: column;      /* stack vertically */
+    align-items: flex-start;     /* left‑align everything */
+    padding: 0.5rem 1rem;        /* a bit of breathing room */
+    gap: 0.5rem;                 /* space between heading & buttons */
+  }
+
+  .quiz-header-row h1 {
+    font-size: 1.25rem;          /* slightly smaller on phone */
+    margin: 0;                   /* remove any default bottom margin */
+  }
+
+  /* target any direct child that isn’t the H1 (buttons, links, etc) */
+  .quiz-header-row > *:not(h1) {
+    display: block;              /* behaves like a block */
+    width: 100%;                 /* fill the container */
+    text-align: center;          /* center their text */
+    margin-top: 0.5rem;          /* space them from the title */
+  }
+
+  /* if your “buttons” use a special class, e.g. .quiz-btn */
+  .quiz-header-row .quiz-btn {
+    box-sizing: border-box;      /* include padding/border in width */
+    padding: 0.75rem;            /* nice tappable height */
+    border-radius: 9999px;       /* pill‑shape */
+    font-size: 1rem;             /* legible on small devices */
+  }
 }

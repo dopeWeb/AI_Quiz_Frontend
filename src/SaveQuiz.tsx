@@ -2,7 +2,9 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate, useLocation } from "react-router-dom";
-import "./SaveQuiz.css";
+import "./css/SaveQuiz.css";
+import { toast,} from "react-toastify";
+
 
 // Example helper to get cookie by name
 function getCookie(name: string): string {
@@ -64,6 +66,8 @@ const SaveQuiz: React.FC = () => {
   // Get updated quiz data and counts passed from QuizEditor (if any)
   const passedQuiz = location.state?.quizData as Quiz | undefined;
   const updatedCounts = (location.state?.updatedCounts as UpdatedCounts) || {};
+  const [isDirty] = useState(false);
+
 
   // First, fetch account data to get the list of quiz IDs.
   useEffect(() => {
@@ -158,8 +162,34 @@ const SaveQuiz: React.FC = () => {
   }
 
   if (!accountData) {
-    return <p>No account data available.</p>;
+    return <p>Loading saved quizzes...</p>;
   }
+
+const handleStartQuiz = async (quizId: number, quiz: Quiz) => {
+  if (!quiz) return;
+
+  // 1) No questions? bail out with an alert
+  if (!quiz.questions || quiz.questions.length === 0) {
+    toast.error("Cannot start the quiz because there are no questions.");
+    return;
+  }
+
+  // 2) Unsaved changes?
+  if (isDirty) {
+    toast.error(
+      "You have unsaved changes. Please click 'Save All' before starting the quiz.",
+      { containerId: "local" }
+    );
+    return;
+  }
+
+  toast.success("Starting quiz...");
+  
+  // 3) (Re‑)fetch and navigate
+  navigate(`/quiz/take/${quizId}`, {
+    state: { quizData: quiz },
+  });
+};
 
   return (
     <div className="save-quiz-wrapper">
@@ -203,9 +233,7 @@ const SaveQuiz: React.FC = () => {
                   </button>
                   <button
                     className="quiz-card-start-btn"
-                    onClick={() =>
-                      navigate(`/quiz/take/${quiz.quiz_id}`, { state: { quizData: quiz } })
-                    }
+                    onClick={() => handleStartQuiz(quiz.quiz_id, quiz)}
                   >
                     Start
                   </button>

@@ -3,7 +3,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useGoogleLogin } from "@react-oauth/google";
 import googleLogo from './img/png-transparent-g-suite-google-play-google-logo-google-text-logo-cloud-computing-thumbnail-removebg-preview.png';
-import "./Auth.css";
+import "./css/Auth.css";
 
 // Helper function to get a cookie by name
 function getCookie(name: string): string | null {
@@ -31,6 +31,7 @@ const Login: React.FC<LoginProps> = ({ setIsAuthenticated }) => {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const navigate = useNavigate();
+
 
   const handleGoogleLogin = async (googleToken: string) => {
     try {
@@ -78,7 +79,14 @@ const Login: React.FC<LoginProps> = ({ setIsAuthenticated }) => {
       navigate("/");
       window.location.reload(); // Automatically refresh the page
     } catch (err: any) {
-      setError("Invalid credentials. Please try again.");
+      // Use the error message returned by the backend (e.g., "User does not exist." or
+      // "Too many failed attempts. Please try again in X minute(s)." or
+      // "Too many failed attempts. Your account is locked for ...")
+      if (err.response && err.response.data && err.response.data.error) {
+        setError(err.response.data.error);
+      } else {
+        setError("Invalid credentials. Please try again.");
+      }
       setSuccess("");
     }
   };
@@ -133,9 +141,9 @@ const Login: React.FC<LoginProps> = ({ setIsAuthenticated }) => {
           required
         />
 
-        {error && <p className="auth-error">{error}</p>}
-        {success && <p className="auth-success">{success}</p>}
-
+        {error && <div style={{ color: "red", marginTop: "8px" }}>{error}</div>}
+        {success && <div style={{ color: "green", marginTop: "8px" }}>{success}</div>}
+        
         <button type="submit">Login</button>
       </form>
 

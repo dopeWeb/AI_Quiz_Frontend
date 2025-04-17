@@ -4,19 +4,22 @@ import { Link, Routes, Route } from "react-router-dom";
 import 'react-toastify/dist/ReactToastify.css';
 import { ToastContainer, toast } from 'react-toastify';
 import axios from "axios";
-import QuizDisplay from "./QuizDisplay.tsx";
-import "./QuizGenerator.css";
-import GeneratingModal from "./GeneratingModal.tsx";
-import Register from "./Register.tsx";
-import Login from "./Login.tsx";
-import Account from "./Account.tsx";
-import SaveQuiz from "./SaveQuiz.tsx";
-import QuizEditor from "./QuizEditor.tsx";
-import QuizTake from "./QuizTake.tsx";
-import LogoutLink from "./LogoutLink.tsx";
-import ForgotPassword from "./ForgotPassword.tsx";
-import ForgotPasswordConfirm from "./ForgotPasswordConfirm.tsx";
-import Footer from "./Footer.tsx";
+import QuizDisplay from "./QuizDisplay";
+import "./css/QuizGenerator.css";
+import GeneratingModal from "./GeneratingModal";
+import Register from "./Register";
+import Login from "./Login";
+import Account from "./Account";
+import SaveQuiz from "./SaveQuiz";
+import QuizEditor from "./QuizEditor";
+import QuizTake from "./QuizTake";
+import LogoutLink from "./LogoutLink";
+import ForgotPassword from "./ForgotPassword";
+import ForgotPasswordConfirm from "./ForgotPasswordConfirm";
+import Footer from "./Footer";
+import "./css/About.css";
+
+
 
 function getCookie(name: string): string | null {
   let cookieValue: string | null = null;
@@ -75,6 +78,14 @@ function App() {
         setUsername("");
       });
   };
+
+
+  useEffect(() => {
+    if (error) {
+      toast.error(error);
+    }
+  }, [error]);
+
 
   // On mount, check if the session is authenticated.
   useEffect(() => {
@@ -206,7 +217,7 @@ function App() {
     setQuizData(null);
   };
 
-  
+
 
 
   return (
@@ -223,7 +234,6 @@ function App() {
         pauseOnHover
         aria-label="Toast Container"
       />
-
       <nav className="navbar">
         <div className="navbar-container">
           <Link to="/" className="home-link">Home</Link>
@@ -236,8 +246,8 @@ function App() {
                 {username}
               </button>
               <div className="account-dropdown-content">
-                <Link to="/account" className="account-link">My Account</Link>
-                <Link to="/saved-quizzes" className="account-link">Saved Quizzes</Link>
+                <a href="http://localhost:3000/account" className="account-link">My Account </a>
+                <a href="http://localhost:3000/saved-quizzes" className="account-link">Saved Quizzes  </a>
                 <LogoutLink
                   setIsAuthenticated={setIsAuthenticated}
                   setUsername={setUsername}
@@ -252,13 +262,12 @@ function App() {
           )}
         </div>
       </nav>
-
       <Routes>
 
         <Route
           path="/"
           element={
-            <div className="quiz-generator-container">
+            <><div className="quiz-generator-container">
               <h1 className="quiz-generator-title">AI Quiz</h1>
               {isGenerating && <GeneratingModal show={isGenerating} />}
               <div className="quiz-content-container">
@@ -275,8 +284,7 @@ function App() {
                           if (lengthNoSpaces <= MAX_CHARS) {
                             setContext(e.target.value);
                           }
-                        }}
-                      />
+                        }} />
                       <div className="quiz-generator-charcount">
                         {countWithoutSpaces(context)}/{MAX_CHARS} characters
                       </div>
@@ -290,7 +298,6 @@ function App() {
                         </div>
                       )}
                     </div>
-                    {error && <p className="quiz-generator-error">{error}</p>}
                     <button
                       onClick={handleOpenModal}
                       className="quiz-generator-generate-btn"
@@ -304,8 +311,7 @@ function App() {
                   <div className="quiz-generator-quizdata">
                     <QuizDisplay
                       quizData={quizData}
-                      quizType={questionType}
-                    />
+                      quizType={questionType} />
                     <button onClick={handleReturn} className="quiz-generator-return-btn">
                       Return
                     </button>
@@ -328,8 +334,7 @@ function App() {
                         placeholder="Enter dashboard name"
                         required
                         className="quiz-generator-input"
-                        maxLength={20}
-                      />
+                        maxLength={20} />
                       <div className="dashboard-charcount">
                         {dashboard.length}/20 characters
                       </div>
@@ -357,8 +362,7 @@ function App() {
                       max="10"
                       value={numQuestions}
                       onChange={(e) => setNumQuestions(e.target.value)}
-                      className="quiz-generator-slider"
-                    />
+                      className="quiz-generator-slider" />
                     <div className="quiz-generator-slider-value">
                       {numQuestions} Questions
                     </div>
@@ -382,16 +386,19 @@ function App() {
                       <button onClick={handleCancelModal} className="quiz-generator-cancel-btn">
                         Cancel
                       </button>
-                      <button onClick={handleModalGenerate }  className="quiz-generator-confirm-btn">
+                      <button onClick={handleModalGenerate} className="quiz-generator-confirm-btn">
                         Generate
                       </button>
                     </div>
                   </div>
                 </div>
+
               )}
-            </div>
+            </div>  {!quizData && <About />} </>
+
           }
         />
+
         {/* Auth routes */}
         <Route path="/login" element={<Login setIsAuthenticated={setIsAuthenticated} />} />
         <Route path="/register" element={<Register setIsAuthenticated={setIsAuthenticated} />} />
@@ -406,7 +413,78 @@ function App() {
         <Route path="/quiz/take/:quizId" element={<QuizTake />} />
       </Routes>
       {!quizData && <Footer />}
-      </>
+    </>
+  );
+}
+
+function About() {
+  return (
+    <div className="home-container">
+      {/* Top / Hero Section */}
+      <section className="hero-section">
+        <h1 className="hero-title">Triple your productivity with the</h1> <h1 className="hero-title1">AI Quiz Generator</h1>
+        <p className="hero-description">
+          Generate quizzes in seconds using AI, then easily edit questions,
+          reorder them, and add features like time limits or shuffled questions.
+          Take the pain out of quiz creation!
+          Max of 30 questions per day. Max of 50 questions per dashboard. Max of 5 dashboards.
+        </p>
+      </section>
+
+      {/* Cards Section */}
+      <section className="features-section">
+        <div className="cards-container">
+          <div className="feature-card">
+            <h2 className="feature-card-title">🧠 AI Generate</h2>
+            <p className="feature-card-text">
+              Our AI powers every part of your quiz creation process.
+              Just provide context and click “Generate” to see your quiz come to life.
+              No more manual question building!
+            </p>
+          </div>
+
+          <div className="feature-card">
+            <h2 className="feature-card-title">⚡ Lightning Fast</h2>
+            <p className="feature-card-text">
+              Experience blazing-fast performance when generating and editing your quizzes.
+              Save time and effort while maintaining complete control.
+            </p>
+          </div>
+
+          <div className="feature-card">
+
+            <h2 className="feature-card-title">🚀 Features for Everyone</h2>
+            <p className="feature-card-text">
+              Whether you’re a teacher, a professional trainer, or a student creating
+              self-tests, our AI Quiz Generator delivers an easy-to-use interface
+              and powerful capabilities for all your quiz needs.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* Optional: Additional Section for Key Features */}
+      <section className="key-features-section">
+        <h2 className="key-features-title">Key Features</h2>
+        <ul className="key-features-list">
+          <li><strong>Editable Quizzes:</strong> Tweak each question to match your needs.</li>
+          <li><strong>Show Answers:</strong> Reveal correct answers when ready.</li>
+          <li><strong>Shuffle Questions:</strong> Keep test takers on their toes.</li>
+          <li><strong>Time Limit:</strong> Add realistic constraints for real exam settings.</li>
+          <li><strong>Drag &amp; Drop Reordering:</strong> Easily rearrange quiz questions to
+            create the perfect flow.
+          </li>
+          <li>
+            <strong>Multiple Languages:</strong> Generate quizzes in various languages
+            to cater to diverse audiences.
+          </li>
+          <li>
+            <strong>Multiple Question Types:</strong> Choose from multiple-choice, true/false,
+            open-ended.
+          </li>
+        </ul>
+      </section>
+    </div>
   );
 }
 

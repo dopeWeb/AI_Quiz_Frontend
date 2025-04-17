@@ -1,5 +1,5 @@
 import React from "react";
-import styles from "./GeneratingModal.module.css";
+import styles from "./css/GeneratingModal.module.css";
 
 interface GeneratingModalProps {
   show: boolean;
