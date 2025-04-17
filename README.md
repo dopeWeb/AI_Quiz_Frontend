@@ -1,46 +1,84 @@
-# Getting Started with Create React App
+# AI Quiz Generator
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Transform your quiz creation workflow with AI-powered generation, lightning-fast performance, and an intuitive interface.
 
-## Available Scripts
+---
+
+## 🧠 AI-Driven Generation
+
+Our advanced AI engine crafts each quiz from the context you provide. Simply enter your topic, click **Generate**, and watch as tailored questions and answers appear instantly.
+
+## ⚡ Lightning-Fast Performance
+
+No more waiting—generate, edit, and save quizzes in milliseconds. Perfect for real-time classroom or training sessions.
+
+## 🚀 Key Features
+
+- **Editable Quizzes**: Customize questions, choices, or correct answers on the fly.
+- **Show Answers**: Reveal solutions when students are ready.
+- **Shuffle Questions**: Randomize for varied test experiences.
+- **Time Limit**: Enforce real exam conditions with countdown timers.
+- **Drag & Drop Reordering**: Effortlessly adjust question order.
+- **Multi‑Language Support**: Generate quizzes in any language (English, Spanish, Chinese, etc.).
+- **Multiple Question Types**: Choose between multiple-choice, true/false, or open‑ended formats.
+
+---
+
+## 🛠️ Getting Started
+
+Follow these steps to install and run the project locally.
+
+### 1. Clone the Repository
+
+```bash
+git clone https://github.com/your‑username/ai‑quiz‑generator.git
+cd ai‑quiz‑generator
+```
+
+### 2. Install Dependencies
+
+```bash
+npm install
+```
+
+### 3. Create a `.env` File (Optional)
+
+If you want Google OAuth login functionality, create a `.env` in the project root containing:
+
+```bash
+REACT_APP_GOOGLE_CLIENT_ID=your_google_client_id_here
+```
+
+### 4. Run the App
+
+```bash
+npm start
+```
+
+Open [http://localhost:3000](http://localhost:3000) in your browser. The UI will hot‑reload on code changes.
+
+---
+
+## 📦 Available Scripts
 
 In the project directory, you can run:
 
-### `npm start`
+| Command          | Description                               |
+| ---------------- | ----------------------------------------- |
+| `npm start`      | Launch development server (http://localhost:3000) |
+| `npm test`       | Run the interactive test runner            |
+| `npm run build`  | Bundle app for production in `/build`      |
+| `npm run eject`  | Reveal build configuration (one‑way)       |
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+---
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+## 🤝 Contributing
 
-### `npm test`
+Feel free to submit issues or pull requests. For major changes, please open an issue first to discuss what you’d like to change.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+---
 
-### `npm run build`
+## 📄 License
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
